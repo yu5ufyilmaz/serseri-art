@@ -6,10 +6,8 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { price, productName, id } = body;
 
-        // Konsola bilgi verelim (Debug)
         console.log("Ödeme isteği geldi:", { price, productName, id });
 
-        // API Anahtarlarını kontrol et
         if (!process.env.IYZICO_API_KEY || !process.env.IYZICO_SECRET_KEY) {
             console.error("HATA: API Key'ler okunmuyor!");
             return NextResponse.json({
@@ -32,11 +30,12 @@ export async function POST(request: Request) {
             currency: Iyzipay.CURRENCY.TRY,
             basketId: String(id),
             paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
+            // DİKKAT: Burayı Vercel için dinamik yapmıştık, onu koruyoruz:
             callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/payment-success`,
             enabledInstallments: [1, 2, 3, 6, 9],
             buyer: {
                 id: '123',
-                name: 'Ogrenci', // Türkçe karakter kullanma (Öğrenci -> Ogrenci)
+                name: 'Ogrenci',
                 surname: 'Alici',
                 gsmNumber: '+905350000000',
                 email: 'email@email.com',
@@ -72,18 +71,16 @@ export async function POST(request: Request) {
                 }
             ]
         };
-
-        return new Promise((resolve) => {
+        
+        return new Promise<NextResponse>((resolve) => {
             iyzipay.checkoutFormInitialize.create(requestData as any, (err: any, result: any) => {
                 if (err) {
                     console.error("IYZICO HATASI (Internal):", err);
                     resolve(NextResponse.json({ status: 'failure', errorMessage: 'Iyzico bağlantı hatası' }));
                 } else if (result.status !== 'success') {
-                    // Iyzico'dan cevap geldi ama hata var (Örn: API Key yanlış)
                     console.error("IYZICO HATASI (Response):", result.errorMessage);
                     resolve(NextResponse.json({ status: 'failure', errorMessage: result.errorMessage }));
                 } else {
-                    // Başarılı
                     console.log("Iyzico Formu Oluştu:", result.paymentPageUrl);
                     resolve(NextResponse.json(result));
                 }
