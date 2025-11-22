@@ -1,0 +1,84 @@
+import React from 'react';
+import { supabase } from '@/lib/supabaseClient';
+import BuyButton from '@/components/BuyButton';
+
+// DİKKAT: Next.js 15'te params bir "Promise" oldu, tipi değiştirdik
+export default async function ArtistDetailPage({ params }: { params: Promise<{ id: string }> }) {
+
+    // DÜZELTME BURADA: params'ı 'await' ile bekleyerek içindeki id'yi alıyoruz
+    const { id } = await params;
+
+    // 1. Sanatçının bilgilerini çek
+    const { data: artist } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('id', id) // artistId yerine direkt id kullandık
+        .single();
+
+    // 2. O sanatçının eserlerini çek
+    const { data: works } = await supabase
+        .from('works')
+        .select('*')
+        .eq('artist_id', id);
+
+    // Eğer sanatçı bulunamazsa
+    if (!artist) {
+        return <div className="text-white text-center mt-20">Sanatçı bulunamadı bro. (Aranan ID: {id})</div>;
+    }
+
+    return (
+        <div className="min-h-screen bg-black text-white">
+
+            {/* --- HERO BÖLÜMÜ (Sanatçı Profili) --- */}
+            <div className="relative h-[40vh] bg-zinc-900 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+
+                <div className="z-20 text-center px-4">
+                    <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white mb-4 bg-zinc-800">
+                        {artist.image_url ? (
+                            <img src={artist.image_url} alt={artist.name} className="w-full h-full object-cover"/>
+                        ) : (
+                            <span className="text-4xl flex items-center justify-center h-full">😎</span>
+                        )}
+                    </div>
+
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">{artist.name}</h1>
+                    <p className="mt-2 text-xl text-gray-300">{artist.department}</p>
+                    <p className="mt-4 max-w-2xl mx-auto text-gray-400">{artist.bio}</p>
+                </div>
+            </div>
+
+            {/* --- ESERLERİ (Vitrin) --- */}
+            <div className="container mx-auto px-4 py-12">
+                <h2 className="text-2xl font-bold mb-8 border-l-4 border-white pl-4">Eserler</h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {works && works.map((work) => (
+                        <div key={work.id} className="bg-zinc-900 rounded-lg overflow-hidden hover:translate-y-[-5px] transition duration-300">
+                            <div className="h-64 bg-zinc-800 w-full">
+                                {work.image_url ? (
+                                    <img src={work.image_url} alt={work.title} className="w-full h-full object-cover"/>
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-zinc-600">Görsel Yok</div>
+                                )}
+                            </div>
+
+                            <div className="p-5">
+                                <h3 className="text-xl font-bold">{work.title}</h3>
+                                <div className="flex justify-between items-center mt-4">
+                                    <span className="text-lg font-mono text-green-400">{work.price} ₺</span>
+                                    <BuyButton price={work.price} productName={work.title} id={work.id} />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    {works?.length === 0 && (
+                        <p className="text-gray-500">Bu sanatçı henüz eser yüklememiş.</p>
+                    )}
+                </div>
+            </div>
+
+        </div>
+    );
+}
