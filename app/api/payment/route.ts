@@ -32,7 +32,7 @@ export async function POST(request: Request) {
             currency: Iyzipay.CURRENCY.TRY,
             basketId: String(id),
             paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
-            callbackUrl: 'http://localhost:3000/api/payment-success',
+            callbackUrl: `${process.env.NEXT_PUBLIC_URL}/api/payment-success`,
             enabledInstallments: [1, 2, 3, 6, 9],
             buyer: {
                 id: '123',
