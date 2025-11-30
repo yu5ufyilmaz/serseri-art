@@ -6,26 +6,32 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function KayitPage() {
+    const [name, setName] = useState(''); // Yeni: İsim için değişken
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const router = useRouter(); // Yönlendirme için
+    const router = useRouter();
 
     const handleRegister = async (e: any) => {
         e.preventDefault();
         setLoading(true);
 
-        // Supabase'e kayıt isteği at
+        // Supabase'e kayıt isteği at (İsim bilgisiyle beraber)
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
+            options: {
+                data: {
+                    full_name: name, // İsmi "metadata" olarak kaydediyoruz
+                },
+            },
         });
 
         if (error) {
             alert('Hata: ' + error.message);
         } else {
             alert('Kayıt Başarılı! Giriş yapabilirsin.');
-            router.push('/giris'); // Giriş sayfasına yönlendir
+            router.push('/giris');
         }
         setLoading(false);
     };
@@ -36,6 +42,20 @@ export default function KayitPage() {
                 <h1 className="text-3xl font-bold mb-6 text-center">Aramıza Katıl</h1>
 
                 <form onSubmit={handleRegister} className="space-y-4">
+
+                    {/* Yeni: Ad Soyad Kutusu */}
+                    <div>
+                        <label className="block text-gray-400 mb-2">Ad Soyad</label>
+                        <input
+                            type="text"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded p-3 text-white focus:outline-none focus:border-white"
+                            placeholder="Adın Soyadın"
+                        />
+                    </div>
+
                     <div>
                         <label className="block text-gray-400 mb-2">E-Posta</label>
                         <input

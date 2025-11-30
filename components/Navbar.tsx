@@ -2,28 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabaseClient'; // Supabase'i çağırdık
+import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [user, setUser] = useState<any>(null); // Kullanıcı bilgisini tutacağımız yer
+    const [user, setUser] = useState<any>(null);
     const router = useRouter();
 
-    // Sayfa yüklendiğinde kullanıcıyı kontrol et
     useEffect(() => {
-        // 1. Mevcut oturumu al
         const checkUser = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             setUser(session?.user ?? null);
         };
         checkUser();
 
-        // 2. Oturum değişikliklerini (Giriş/Çıkış) dinle
         const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
             setUser(session?.user ?? null);
             if (event === 'SIGNED_OUT') {
-                router.refresh(); // Çıkış yapılınca sayfayı yenile
+                router.refresh();
             }
         });
 
@@ -36,6 +33,14 @@ export default function Navbar() {
         await supabase.auth.signOut();
         alert("Çıkış yapıldı!");
         setUser(null);
+        router.push('/');
+    };
+
+    // KULLANICI İSMİNİ ALMA FONKSİYONU
+    // Meta veride 'full_name' varsa onu al, yoksa email'in başını al (@'den öncesi)
+    const getUserName = () => {
+        if (!user) return '';
+        return user.user_metadata?.full_name || user.email?.split('@')[0];
     };
 
     return (
@@ -43,14 +48,12 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
 
-                    {/* Logo */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-2xl font-bold tracking-tighter hover:text-gray-300 transition">
                             serseri.art
                         </Link>
                     </div>
 
-                    {/* MASAÜSTÜ MENÜ */}
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-8">
                             <Link href="/" className="hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition">
@@ -63,15 +66,17 @@ export default function Navbar() {
                                 Biz Kimiz
                             </Link>
 
-                            {/* Kullanıcı varsa Çıkış Yap, yoksa Giriş Yap göster */}
                             {user ? (
                                 <div className="flex items-center gap-4">
-                                    <span className="text-sm text-gray-400 truncate max-w-[100px]">{user.email}</span>
+                                    {/* İSİM BURADA GÖRÜNECEK */}
+                                    <span className="text-sm font-bold text-white bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">
+                        👤 {getUserName()}
+                    </span>
                                     <button
                                         onClick={handleLogout}
-                                        className="bg-zinc-800 border border-zinc-700 text-white px-4 py-1 rounded text-sm font-bold hover:bg-zinc-700 transition"
+                                        className="text-gray-400 hover:text-white text-sm font-medium transition"
                                     >
-                                        Çıkış Yap
+                                        Çıkış
                                     </button>
                                 </div>
                             ) : (
@@ -82,7 +87,6 @@ export default function Navbar() {
                         </div>
                     </div>
 
-                    {/* MOBİL MENÜ BUTONU */}
                     <div className="-mr-2 flex md:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
@@ -103,7 +107,6 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* MOBİL MENÜ LİSTESİ */}
             {isOpen && (
                 <div className="md:hidden bg-zinc-900 border-b border-zinc-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
@@ -113,7 +116,9 @@ export default function Navbar() {
 
                         {user ? (
                             <>
-                                <div className="px-3 py-2 text-gray-400 text-sm">{user.email}</div>
+                                <div className="px-3 py-2 text-white font-bold border-t border-zinc-800 mt-2">
+                                    👤 {getUserName()}
+                                </div>
                                 <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-2 rounded text-sm font-bold">
                                     Çıkış Yap
                                 </button>
