@@ -1,14 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); // Mobil menü durumu
+    const [isProfileOpen, setIsProfileOpen] = useState(false); // Profil menüsü durumu
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
+
+    // Profil menüsü dışına tıklanınca kapanması için referans
+    const profileMenuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -24,20 +28,29 @@ export default function Navbar() {
             }
         });
 
+        // Dışarı tıklamayı dinle
+        const handleClickOutside = (event: MouseEvent) => {
+            if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+                setIsProfileOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+
         return () => {
             authListener.subscription.unsubscribe();
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [router]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        alert("Çıkış yapıldı!");
+        setIsProfileOpen(false);
+        setIsOpen(false);
         setUser(null);
         router.push('/');
+        alert("Çıkış yapıldı!");
     };
 
-    // KULLANICI İSMİNİ ALMA FONKSİYONU
-    // Meta veride 'full_name' varsa onu al, yoksa email'in başını al (@'den öncesi)
     const getUserName = () => {
         if (!user) return '';
         return user.user_metadata?.full_name || user.email?.split('@')[0];
@@ -48,12 +61,14 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
 
+                    {/* LOGO */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-2xl font-bold tracking-tighter hover:text-gray-300 transition">
                             serseri.art
                         </Link>
                     </div>
 
+                    {/* MASAÜSTÜ MENÜ */}
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-8">
                             <Link href="/" className="hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition">
@@ -66,27 +81,53 @@ export default function Navbar() {
                                 Biz Kimiz
                             </Link>
 
+                            {/* KULLANICI PROFİL ALANI (DROPDOWN) */}
                             {user ? (
-                                <div className="flex items-center gap-4">
-                                    {/* İSİM BURADA GÖRÜNECEK */}
-                                    <span className="text-sm font-bold text-white bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">
-                        👤 {getUserName()}
-                    </span>
+                                <div className="relative ml-4" ref={profileMenuRef}>
+                                    {/* İsim Butonu */}
                                     <button
-                                        onClick={handleLogout}
-                                        className="text-gray-400 hover:text-white text-sm font-medium transition"
+                                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                        className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 text-white px-4 py-2 rounded-full hover:bg-zinc-800 transition focus:outline-none"
                                     >
-                                        Çıkış
+                                        <span className="text-sm font-bold">👤 {getUserName()}</span>
+                                        <svg className={`w-4 h-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
                                     </button>
+
+                                    {/* Açılır Menü */}
+                                    {isProfileOpen && (
+                                        <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-1 z-50 overflow-hidden">
+                                            <div className="px-4 py-2 border-b border-zinc-800 text-xs text-gray-500">
+                                                Hesabım
+                                            </div>
+
+                                            <Link
+                                                href="/siparislerim"
+                                                onClick={() => setIsProfileOpen(false)}
+                                                className="block px-4 py-3 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition"
+                                            >
+                                                📦 Siparişlerim
+                                            </Link>
+
+                                            <button
+                                                onClick={handleLogout}
+                                                className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition"
+                                            >
+                                                🚪 Çıkış Yap
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             ) : (
-                                <Link href="/giris" className="bg-white text-black px-4 py-1 rounded text-sm font-bold hover:bg-gray-200 transition">
+                                <Link href="/giris" className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition">
                                     Giriş Yap
                                 </Link>
                             )}
                         </div>
                     </div>
 
+                    {/* MOBİL MENÜ BUTONU */}
                     <div className="-mr-2 flex md:hidden">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
@@ -107,6 +148,7 @@ export default function Navbar() {
                 </div>
             </div>
 
+            {/* MOBİL MENÜ LİSTESİ */}
             {isOpen && (
                 <div className="md:hidden bg-zinc-900 border-b border-zinc-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
@@ -115,19 +157,32 @@ export default function Navbar() {
                         <Link href="/biz-kimiz" onClick={() => setIsOpen(false)} className="hover:bg-zinc-800 block px-3 py-2 rounded-md text-base font-medium">Biz Kimiz</Link>
 
                         {user ? (
-                            <>
-                                <div className="px-3 py-2 text-white font-bold border-t border-zinc-800 mt-2">
-                                    👤 {getUserName()}
+                            <div className="border-t border-zinc-800 mt-4 pt-4 pb-2">
+                                <div className="px-3 flex items-center gap-3 mb-3">
+                                    <div className="w-8 h-8 bg-zinc-700 rounded-full flex items-center justify-center text-sm">👤</div>
+                                    <div>
+                                        <div className="text-white font-bold text-sm">{getUserName()}</div>
+                                        <div className="text-zinc-500 text-xs">{user.email}</div>
+                                    </div>
                                 </div>
-                                <Link href="/siparislerim" className="text-gray-300 hover:text-white text-sm font-medium transition">
-                                    Siparişlerim
+
+                                <Link
+                                    href="/siparislerim"
+                                    onClick={() => setIsOpen(false)}
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800"
+                                >
+                                    📦 Siparişlerim
                                 </Link>
-                                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-2 rounded text-sm font-bold">
-                                    Çıkış Yap
+
+                                <button
+                                    onClick={() => { handleLogout(); setIsOpen(false); }}
+                                    className="mt-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-zinc-800 hover:text-red-300"
+                                >
+                                    🚪 Çıkış Yap
                                 </button>
-                            </>
+                            </div>
                         ) : (
-                            <Link href="/giris" onClick={() => setIsOpen(false)} className="mt-4 w-full bg-white text-black px-4 py-2 rounded text-sm font-bold hover:bg-gray-200 transition text-center block">
+                            <Link href="/giris" onClick={() => setIsOpen(false)} className="mt-4 w-full bg-white text-black px-4 py-3 rounded font-bold hover:bg-gray-200 transition text-center block">
                                 Giriş Yap
                             </Link>
                         )}
