@@ -1,17 +1,18 @@
 import { NextResponse } from 'next/server';
 import Iyzipay from 'iyzipay';
-import { supabase } from '@/lib/supabaseClient'; // Supabase kütüphanesini çağırdık
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
     try {
         const formData = await request.formData();
         const token = formData.get('token');
 
-        if (!token) {
-            return NextResponse.redirect('http://localhost:3000/?error=no_token', 303);
-        }
+        if (!token) return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/?error=no_token`, 303);
 
-        // 1. Iyzico'ya Sorgu At
+        // 1. Service Key Kontrolü (Log)
+        const hasServiceKey = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+        console.log("🔐 Service Key Yüklü mü?:", hasServiceKey ? "EVET" : "HAYIR ❌ (Sorun burada olabilir)");
+
         const iyzipay = new Iyzipay({
             apiKey: process.env.IYZICO_API_KEY!,
             secretKey: process.env.IYZICO_SECRET_KEY!,
@@ -21,46 +22,51 @@ export async function POST(request: Request) {
         const result: any = await new Promise((resolve) => {
             iyzipay.checkoutForm.retrieve({
                 locale: Iyzipay.LOCALE.TR,
-                conversationId: '123456789',
                 token: String(token)
-            }, (err: any, result: any) => {
-                if (err) resolve({ status: 'failure', errorMessage: err });
-                else resolve(result);
-            });
+            }, (err: any, result: any) => resolve(result));
         });
 
-        // 2. Sonucu Kontrol Et ve KAYDET
         if (result.status === 'success' && result.paymentStatus === 'SUCCESS') {
 
-            console.log("✅ Ödeme Başarılı! Veritabanına kaydediliyor...");
+            // ID'yi alıyoruz (conversationId veya basketId)
+            const rawId = result.conversationId || result.basketId;
 
-            // --- SUPABASE KAYIT KISMI ---
-            const { error: dbError } = await supabase
-                .from('orders') // 'orders' tablosuna git
-                .insert({       // Şunları ekle:
-                    payment_id: result.paymentId,
-                    amount: result.price,
+            // DÜZELTME: ID'yi sayıya (Integer) çeviriyoruz
+            const orderId = parseInt(rawId);
+
+            console.log(`🔍 Aranan Sipariş ID: ${orderId} (Orjinal: ${rawId})`);
+
+            // Admin yetkisiyle bağlan
+            const supabaseAdmin = createClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!
+            );
+
+            // Güncelle
+            const { data, error } = await supabaseAdmin
+                .from('orders')
+                .update({
                     status: 'SUCCESS',
-                    buyer_ip: '85.34.78.112' // Iyzico'dan gelen IP veya statik
-                });
+                    payment_id: result.paymentId
+                })
+                .eq('id', orderId) // Artık sayı olarak arıyoruz
+                .select();
 
-            if (dbError) {
-                console.error("⚠️ Ödeme alındı ama veritabanına yazılamadı:", dbError);
-                // Para alındığı için yine de başarılı sayfasına gönderiyoruz, ama loglara bakmalısın.
+            if (data && data.length > 0) {
+                console.log("✅ GÜNCELLENDİ! Sipariş No:", data[0].id);
             } else {
-                console.log("💾 Sipariş başarıyla kaydedildi.");
+                console.error("⚠️ HATA: Bu ID'ye sahip sipariş veritabanında bulunamadı!");
+                console.error("İPUCU: Supabase 'orders' tablosunu kontrol et, ID'si", orderId, "olan bir satır var mı?");
             }
-            // -----------------------------
 
             return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/odeme-basarili`, 303);
 
         } else {
-            console.error("❌ Ödeme Başarısız:", result.errorMessage);
             return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/?error=payment_failed`, 303);
         }
 
     } catch (error) {
-        console.error("💥 Sunucu Hatası:", error);
-        return NextResponse.redirect('http://localhost:3000/?error=server_crash', 303);
+        console.error("Sunucu Hatası:", error);
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/?error=server_error`, 303);
     }
 }
