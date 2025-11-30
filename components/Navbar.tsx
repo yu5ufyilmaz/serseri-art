@@ -119,6 +119,9 @@ export default function Navbar() {
                                 <div className="px-3 py-2 text-white font-bold border-t border-zinc-800 mt-2">
                                     👤 {getUserName()}
                                 </div>
+                                <Link href="/siparislerim" className="text-gray-300 hover:text-white text-sm font-medium transition">
+                                    Siparişlerim
+                                </Link>
                                 <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-2 rounded text-sm font-bold">
                                     Çıkış Yap
                                 </button>
