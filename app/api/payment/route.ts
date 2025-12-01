@@ -5,9 +5,46 @@ import { supabase } from '@/lib/supabaseClient';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { price, productName, id, buyer } = body;
 
-        // 1. Önce Siparişi "Beklemede" olarak Veritabanına Kaydet (YENİ SİPARİŞ NO AL)
+        // Hem tekli alımı hem sepeti destekleyen yapı
+        const { buyer, cartItems } = body;
+        let { price, productName, id } = body;
+
+        // EĞER SEPET VARSA: Fiyatı ve listeyi sepetten oluştur
+        let basketItemsIyzico = [];
+
+        if (cartItems && cartItems.length > 0) {
+            // 1. Toplam fiyatı hesapla
+            price = cartItems.reduce((sum: number, item: any) => sum + Number(item.price), 0);
+
+            // 2. Ürün ismini özetle (Örn: "3 Eser: Tablo A, Heykel B...")
+            productName = `${cartItems.length} Eser: ` + cartItems.map((i: any) => i.title).join(', ');
+            if (productName.length > 200) productName = productName.substring(0, 197) + '...';
+
+            // 3. ID olarak ilk ürünün ID'sini veya rastgele bir ID kullanabiliriz (Sepet ID'si)
+            id = 'cart_' + Date.now();
+
+            // 4. Iyzico Sepet Formatını Hazırla
+            basketItemsIyzico = cartItems.map((item: any) => ({
+                id: String(item.id),
+                name: item.title,
+                category1: 'Sanat',
+                itemType: Iyzipay.BASKET_ITEM_TYPE.PHYSICAL,
+                price: item.price
+            }));
+
+        } else {
+            // TEKLİ ALIM İSE (Eski sistem devam)
+            basketItemsIyzico = [{
+                id: String(id),
+                name: productName,
+                category1: 'Sanat',
+                itemType: Iyzipay.BASKET_ITEM_TYPE.PHYSICAL,
+                price: price
+            }];
+        }
+
+        // --- SİPARİŞİ VERİTABANINA KAYDET ---
         const { data: orderData, error: orderError } = await supabase
             .from('orders')
             .insert({
@@ -29,11 +66,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ status: 'failure', errorMessage: 'Sipariş oluşturulamadı' });
         }
 
-        // YENİ SİPARİŞ NUMARASI BURADA! (Örn: 24, 25...)
         const orderId = orderData.id;
-        console.log("📝 Yeni Sipariş Oluşturuldu. ID:", orderId);
+        console.log("📝 Sipariş Oluşturuldu. ID:", orderId, "Tutar:", price);
 
-        // 2. Iyzico'yu Başlat
+        // --- IYZICO BAŞLAT ---
         const iyzipay = new Iyzipay({
             apiKey: process.env.IYZICO_API_KEY!,
             secretKey: process.env.IYZICO_SECRET_KEY!,
@@ -42,7 +78,7 @@ export async function POST(request: Request) {
 
         const requestData = {
             locale: Iyzipay.LOCALE.TR,
-            conversationId: String(orderId), // <--- DÜZELTME: Artık Ürün ID'si (1) değil, Sipariş ID'si (24) gidiyor!
+            conversationId: String(orderId),
             price: price,
             paidPrice: price,
             currency: Iyzipay.CURRENCY.TRY,
@@ -78,21 +114,13 @@ export async function POST(request: Request) {
                 address: buyer?.address || 'Adres Yok',
                 zipCode: '34742'
             },
-            basketItems: [
-                {
-                    id: String(id),
-                    name: productName,
-                    category1: 'Sanat',
-                    itemType: Iyzipay.BASKET_ITEM_TYPE.PHYSICAL,
-                    price: price
-                }
-            ]
+            basketItems: basketItemsIyzico // Hazırladığımız sepet listesini buraya koyduk
         };
 
         return new Promise<NextResponse>((resolve) => {
             iyzipay.checkoutFormInitialize.create(requestData as any, (err: any, result: any) => {
                 if (err || result.status !== 'success') {
-                    console.error("Iyzico Başlatma Hatası:", result?.errorMessage);
+                    console.error("Iyzico Hatası:", result?.errorMessage);
                     resolve(NextResponse.json({ status: 'failure', errorMessage: result?.errorMessage || 'Iyzico Hatası' }));
                 } else {
                     resolve(NextResponse.json(result));
