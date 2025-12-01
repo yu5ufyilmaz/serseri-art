@@ -7,12 +7,13 @@ import { useRouter } from 'next/navigation';
 import { useCart } from "@/context/CartContext";
 
 export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); // Mobil menü durumu
+    const [isProfileOpen, setIsProfileOpen] = useState(false); // Profil menüsü durumu
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
     const { cart } = useCart();
 
+    // Profil menüsü dışına tıklanınca kapanması için referans
     const profileMenuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -29,6 +30,7 @@ export default function Navbar() {
             }
         });
 
+        // Dışarı tıklamayı dinle
         const handleClickOutside = (event: MouseEvent) => {
             if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
                 setIsProfileOpen(false);
@@ -81,12 +83,12 @@ export default function Navbar() {
                                 Biz Kimiz
                             </Link>
 
-                            {/* KULLANICI ALANI - HİZALAMA DÜZELTİLDİ */}
+                            {/* KULLANICI ALANI */}
                             {user ? (
-                                <div className="flex items-center gap-4 ml-4 h-full"> {/* h-full ekledik */}
+                                <div className="flex items-center gap-4 ml-4">
 
-                                    {/* SEPET İKONU */}
-                                    <Link href="/sepet" className="relative p-2 text-gray-400 hover:text-white transition group flex items-center justify-center">
+                                    {/* 1. SEPET İKONU */}
+                                    <Link href="/sepet" className="relative p-2 text-gray-400 hover:text-white transition group">
                                         <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                         </svg>
@@ -97,8 +99,8 @@ export default function Navbar() {
                                         )}
                                     </Link>
 
-                                    {/* PROFİL MENÜSÜ */}
-                                    <div className="relative flex items-center" ref={profileMenuRef}>
+                                    {/* 2. PROFİL MENÜSÜ */}
+                                    <div className="relative" ref={profileMenuRef}>
                                         <button
                                             onClick={() => setIsProfileOpen(!isProfileOpen)}
                                             className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 text-white px-4 py-2 rounded-full hover:bg-zinc-800 transition focus:outline-none"
@@ -109,14 +111,28 @@ export default function Navbar() {
                                             </svg>
                                         </button>
 
+                                        {/* Açılır Kutu (Dropdown) */}
                                         {isProfileOpen && (
-                                            <div className="absolute right-0 top-full mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-1 z-50 overflow-hidden">
+                                            <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-1 z-50 overflow-hidden">
                                                 <div className="px-4 py-2 border-b border-zinc-800 text-xs text-gray-500">
                                                     Hesabım
                                                 </div>
+
+                                                {/* --- ADMIN LİNKİ (Sadece Patron Görür) --- */}
+                                                {user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
+                                                    <Link
+                                                        href="/admin"
+                                                        onClick={() => setIsProfileOpen(false)}
+                                                        className="block px-4 py-3 text-sm text-purple-400 hover:bg-zinc-800 hover:text-purple-300 transition font-bold border-b border-zinc-800"
+                                                    >
+                                                        👑 Yönetim Paneli
+                                                    </Link>
+                                                )}
+
                                                 <Link href="/siparislerim" onClick={() => setIsProfileOpen(false)} className="block px-4 py-3 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition">
                                                     📦 Siparişlerim
                                                 </Link>
+
                                                 <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition">
                                                     🚪 Çıkış Yap
                                                 </button>
@@ -153,7 +169,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* MOBİL MENÜ LİSTESİ (Aynı kalabilir) */}
+            {/* MOBİL MENÜ LİSTESİ */}
             {isOpen && (
                 <div className="md:hidden bg-zinc-900 border-b border-zinc-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
@@ -171,6 +187,17 @@ export default function Navbar() {
                                     </div>
                                 </div>
 
+                                {/* Admin Mobilde Görünürlük */}
+                                {user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
+                                    <Link
+                                        href="/admin"
+                                        onClick={() => setIsOpen(false)}
+                                        className="block px-3 py-2 rounded-md text-base font-medium text-purple-400 hover:text-purple-300 hover:bg-zinc-800"
+                                    >
+                                        👑 Yönetim Paneli
+                                    </Link>
+                                )}
+
                                 <Link href="/sepet" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800 flex items-center justify-between">
                                     <span>🛒 Sepetim</span>
                                     {cart.length > 0 && <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">{cart.length}</span>}
@@ -179,14 +206,6 @@ export default function Navbar() {
                                 <Link href="/siparislerim" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800">
                                     📦 Siparişlerim
                                 </Link>
-                                // Linklerin olduğu yere (Siparişlerim'in altına veya üstüne) ekle:
-
-                                {/* Sadece ADMIN görebilir */}
-                                {user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
-                                    <Link href="/admin" className="block px-4 py-3 text-sm text-purple-400 hover:bg-zinc-800 hover:text-purple-300 transition font-bold border-b border-zinc-800">
-                                        👑 Yönetim Paneli
-                                    </Link>
-                                )}
 
                                 <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-zinc-800 hover:text-red-300">
                                     🚪 Çıkış Yap
