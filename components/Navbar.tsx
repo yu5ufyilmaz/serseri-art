@@ -4,14 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import { useCart } from "@/context/CartContext";
 
 export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false); // Mobil menü durumu
-    const [isProfileOpen, setIsProfileOpen] = useState(false); // Profil menüsü durumu
+    const [isOpen, setIsOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
+    const { cart } = useCart();
 
-    // Profil menüsü dışına tıklanınca kapanması için referans
     const profileMenuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -28,7 +29,6 @@ export default function Navbar() {
             }
         });
 
-        // Dışarı tıklamayı dinle
         const handleClickOutside = (event: MouseEvent) => {
             if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
                 setIsProfileOpen(false);
@@ -81,43 +81,48 @@ export default function Navbar() {
                                 Biz Kimiz
                             </Link>
 
-                            {/* KULLANICI PROFİL ALANI (DROPDOWN) */}
+                            {/* KULLANICI ALANI - HİZALAMA DÜZELTİLDİ */}
                             {user ? (
-                                <div className="relative ml-4" ref={profileMenuRef}>
-                                    {/* İsim Butonu */}
-                                    <button
-                                        onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                        className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 text-white px-4 py-2 rounded-full hover:bg-zinc-800 transition focus:outline-none"
-                                    >
-                                        <span className="text-sm font-bold">👤 {getUserName()}</span>
-                                        <svg className={`w-4 h-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                <div className="flex items-center gap-4 ml-4 h-full"> {/* h-full ekledik */}
+
+                                    {/* SEPET İKONU */}
+                                    <Link href="/sepet" className="relative p-2 text-gray-400 hover:text-white transition group flex items-center justify-center">
+                                        <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                         </svg>
-                                    </button>
+                                        {cart.length > 0 && (
+                                            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
+                                {cart.length}
+                            </span>
+                                        )}
+                                    </Link>
 
-                                    {/* Açılır Menü */}
-                                    {isProfileOpen && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-1 z-50 overflow-hidden">
-                                            <div className="px-4 py-2 border-b border-zinc-800 text-xs text-gray-500">
-                                                Hesabım
+                                    {/* PROFİL MENÜSÜ */}
+                                    <div className="relative flex items-center" ref={profileMenuRef}>
+                                        <button
+                                            onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                            className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 text-white px-4 py-2 rounded-full hover:bg-zinc-800 transition focus:outline-none"
+                                        >
+                                            <span className="text-sm font-bold">👤 {getUserName()}</span>
+                                            <svg className={`w-4 h-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
+                                        </button>
+
+                                        {isProfileOpen && (
+                                            <div className="absolute right-0 top-full mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-1 z-50 overflow-hidden">
+                                                <div className="px-4 py-2 border-b border-zinc-800 text-xs text-gray-500">
+                                                    Hesabım
+                                                </div>
+                                                <Link href="/siparislerim" onClick={() => setIsProfileOpen(false)} className="block px-4 py-3 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition">
+                                                    📦 Siparişlerim
+                                                </Link>
+                                                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition">
+                                                    🚪 Çıkış Yap
+                                                </button>
                                             </div>
-
-                                            <Link
-                                                href="/siparislerim"
-                                                onClick={() => setIsProfileOpen(false)}
-                                                className="block px-4 py-3 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition"
-                                            >
-                                                📦 Siparişlerim
-                                            </Link>
-
-                                            <button
-                                                onClick={handleLogout}
-                                                className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition"
-                                            >
-                                                🚪 Çıkış Yap
-                                            </button>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             ) : (
                                 <Link href="/giris" className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition">
@@ -128,7 +133,7 @@ export default function Navbar() {
                     </div>
 
                     {/* MOBİL MENÜ BUTONU */}
-                    <div className="-mr-2 flex md:hidden">
+                    <div className="-mr-2 flex md:hidden gap-4 items-center">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
                             className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-zinc-800 focus:outline-none"
@@ -148,7 +153,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* MOBİL MENÜ LİSTESİ */}
+            {/* MOBİL MENÜ LİSTESİ (Aynı kalabilir) */}
             {isOpen && (
                 <div className="md:hidden bg-zinc-900 border-b border-zinc-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
@@ -166,18 +171,16 @@ export default function Navbar() {
                                     </div>
                                 </div>
 
-                                <Link
-                                    href="/siparislerim"
-                                    onClick={() => setIsOpen(false)}
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800"
-                                >
+                                <Link href="/sepet" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800 flex items-center justify-between">
+                                    <span>🛒 Sepetim</span>
+                                    {cart.length > 0 && <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">{cart.length}</span>}
+                                </Link>
+
+                                <Link href="/siparislerim" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800">
                                     📦 Siparişlerim
                                 </Link>
 
-                                <button
-                                    onClick={() => { handleLogout(); setIsOpen(false); }}
-                                    className="mt-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-zinc-800 hover:text-red-300"
-                                >
+                                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-zinc-800 hover:text-red-300">
                                     🚪 Çıkış Yap
                                 </button>
                             </div>

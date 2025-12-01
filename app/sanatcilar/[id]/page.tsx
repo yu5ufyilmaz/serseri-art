@@ -1,35 +1,33 @@
 import React from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import BuyButton from '@/components/BuyButton';
+import AddToCartButton from '@/components/AddToCartButton'; // Yeni import
 
-// DİKKAT: Next.js 15'te params bir "Promise" oldu, tipi değiştirdik
 export default async function ArtistDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
-    // DÜZELTME BURADA: params'ı 'await' ile bekleyerek içindeki id'yi alıyoruz
     const { id } = await params;
 
-    // 1. Sanatçının bilgilerini çek
+    // 1. Sanatçı Bilgisi
     const { data: artist } = await supabase
         .from('artists')
         .select('*')
-        .eq('id', id) // artistId yerine direkt id kullandık
+        .eq('id', id)
         .single();
 
-    // 2. O sanatçının eserlerini çek
+    // 2. Eserleri
     const { data: works } = await supabase
         .from('works')
         .select('*')
         .eq('artist_id', id);
 
-    // Eğer sanatçı bulunamazsa
     if (!artist) {
-        return <div className="text-white text-center mt-20">Sanatçı bulunamadı bro. (Aranan ID: {id})</div>;
+        return <div className="text-white text-center mt-20">Sanatçı bulunamadı.</div>;
     }
 
     return (
         <div className="min-h-screen bg-black text-white">
 
-            {/* --- HERO BÖLÜMÜ (Sanatçı Profili) --- */}
+            {/* --- HERO: Sanatçı Profili --- */}
             <div className="relative h-[40vh] bg-zinc-900 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
 
@@ -48,26 +46,44 @@ export default async function ArtistDetailPage({ params }: { params: Promise<{ i
                 </div>
             </div>
 
-            {/* --- ESERLERİ (Vitrin) --- */}
+            {/* --- VİTRİN: Eserler --- */}
             <div className="container mx-auto px-4 py-12">
                 <h2 className="text-2xl font-bold mb-8 border-l-4 border-white pl-4">Eserler</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {works && works.map((work) => (
-                        <div key={work.id} className="bg-zinc-900 rounded-lg overflow-hidden hover:translate-y-[-5px] transition duration-300">
-                            <div className="h-64 bg-zinc-800 w-full">
+                        <div key={work.id} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-600 transition duration-300 flex flex-col">
+
+                            {/* Eser Resmi */}
+                            <div className="h-64 bg-zinc-800 w-full relative group">
                                 {work.image_url ? (
-                                    <img src={work.image_url} alt={work.title} className="w-full h-full object-cover"/>
+                                    <img src={work.image_url} alt={work.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-zinc-600">Görsel Yok</div>
                                 )}
                             </div>
 
-                            <div className="p-5">
-                                <h3 className="text-xl font-bold">{work.title}</h3>
-                                <div className="flex justify-between items-center mt-4">
-                                    <span className="text-lg font-mono text-green-400">{work.price} ₺</span>
-                                    <BuyButton price={work.price} productName={work.title} id={work.id} />
+                            {/* Alt Bilgi Kutusu */}
+                            <div className="p-5 flex flex-col flex-grow">
+                                <h3 className="text-xl font-bold mb-1">{work.title}</h3>
+                                <p className="text-sm text-gray-400 mb-4">Orijinal Eser</p>
+
+                                {/* Fiyat ve Butonlar (En alta sabitledik) */}
+                                <div className="mt-auto pt-4 border-t border-zinc-800 flex flex-col gap-3">
+                                    <div className="text-2xl font-mono font-bold text-green-400">
+                                        {work.price} ₺
+                                    </div>
+
+                                    <div className="flex gap-2 w-full">
+                                        {/* Sepet Butonu */}
+                                        <div className="flex-1">
+                                            <AddToCartButton product={work} />
+                                        </div>
+                                        {/* Satın Al Butonu */}
+                                        <div className="flex-[2]">
+                                            <BuyButton price={work.price} productName={work.title} id={work.id} />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
