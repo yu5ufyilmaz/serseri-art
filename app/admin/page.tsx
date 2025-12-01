@@ -8,17 +8,47 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <Link href="/admin/sanatci-ekle" className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 hover:border-purple-500 transition group">
-                    <div className="text-4xl mb-4">🎨</div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-purple-400">Yeni Sanatçı Ekle</h3>
-                    <p className="text-gray-500">Sisteme yeni bir yetenek kaydet.</p>
-                </Link>
+                {/* EKLEME BÖLÜMÜ */}
+                <div className="space-y-4">
+                    <h2 className="text-xl font-bold text-white border-b border-zinc-800 pb-2">Yeni Ekle</h2>
 
-                <Link href="/admin/eser-ekle" className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 hover:border-green-500 transition group">
-                    <div className="text-4xl mb-4">🖼️</div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-green-400">Yeni Eser Yükle</h3>
-                    <p className="text-gray-500">Satışa çıkacak yeni bir ürün ekle.</p>
-                </Link>
+                    <Link href="/admin/sanatci-ekle" className="flex items-center gap-4 bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-purple-500 transition group">
+                        <div className="text-3xl">🎨</div>
+                        <div>
+                            <h3 className="font-bold group-hover:text-purple-400">Sanatçı Ekle</h3>
+                            <p className="text-sm text-gray-500">Yeni yetenek kaydet</p>
+                        </div>
+                    </Link>
+
+                    <Link href="/admin/eser-ekle" className="flex items-center gap-4 bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-green-500 transition group">
+                        <div className="text-3xl">🖼️</div>
+                        <div>
+                            <h3 className="font-bold group-hover:text-green-400">Eser Ekle</h3>
+                            <p className="text-sm text-gray-500">Vitrine ürün koy</p>
+                        </div>
+                    </Link>
+                </div>
+
+                {/* YÖNETME BÖLÜMÜ (YENİ) */}
+                <div className="space-y-4">
+                    <h2 className="text-xl font-bold text-white border-b border-zinc-800 pb-2">Düzenle / Sil</h2>
+
+                    <Link href="/admin/sanatcilar" className="flex items-center gap-4 bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500 transition group">
+                        <div className="text-3xl">👥</div>
+                        <div>
+                            <h3 className="font-bold group-hover:text-blue-400">Sanatçıları Yönet</h3>
+                            <p className="text-sm text-gray-500">Listele, düzenle, sil</p>
+                        </div>
+                    </Link>
+
+                    <Link href="/admin/eserler" className="flex items-center gap-4 bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-yellow-500 transition group">
+                        <div className="text-3xl">📦</div>
+                        <div>
+                            <h3 className="font-bold group-hover:text-yellow-400">Eserleri Yönet</h3>
+                            <p className="text-sm text-gray-500">Fiyat güncelle, sil</p>
+                        </div>
+                    </Link>
+                </div>
 
             </div>
         </div>
