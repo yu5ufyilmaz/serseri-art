@@ -1,7 +1,8 @@
 import React from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import BuyButton from '@/components/BuyButton';
-import AddToCartButton from '@/components/AddToCartButton'; // Yeni import
+import AddToCartButton from '@/components/AddToCartButton';
+import Link from 'next/link';
 
 export default async function ArtistDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
@@ -54,21 +55,21 @@ export default async function ArtistDetailPage({ params }: { params: Promise<{ i
                     {works && works.map((work) => (
                         <div key={work.id} className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-600 transition duration-300 flex flex-col">
 
-                            {/* Eser Resmi */}
-                            <div className="h-64 bg-zinc-800 w-full relative group">
+                            {/* Eser Resmi (LİNK İLE SARILDI) */}
+                            <Link href={`/eser/${work.id}`} className="h-64 bg-zinc-800 w-full relative group block cursor-pointer">
                                 {work.image_url ? (
                                     <img src={work.image_url} alt={work.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-zinc-600">Görsel Yok</div>
                                 )}
-                            </div>
+                            </Link>
 
                             {/* Alt Bilgi Kutusu */}
                             <div className="p-5 flex flex-col flex-grow">
                                 <h3 className="text-xl font-bold mb-1">{work.title}</h3>
                                 <p className="text-sm text-gray-400 mb-4">Orijinal Eser</p>
 
-                                {/* Fiyat ve Butonlar (En alta sabitledik) */}
+                                {/* Fiyat ve Butonlar */}
                                 <div className="mt-auto pt-4 border-t border-zinc-800 flex flex-col gap-3">
                                     <div className="text-2xl font-mono font-bold text-green-400">
                                         {work.price} ₺

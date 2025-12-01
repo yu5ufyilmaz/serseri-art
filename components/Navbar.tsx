@@ -179,6 +179,14 @@ export default function Navbar() {
                                 <Link href="/siparislerim" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800">
                                     📦 Siparişlerim
                                 </Link>
+                                // Linklerin olduğu yere (Siparişlerim'in altına veya üstüne) ekle:
+
+                                {/* Sadece ADMIN görebilir */}
+                                {user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
+                                    <Link href="/admin" className="block px-4 py-3 text-sm text-purple-400 hover:bg-zinc-800 hover:text-purple-300 transition font-bold border-b border-zinc-800">
+                                        👑 Yönetim Paneli
+                                    </Link>
+                                )}
 
                                 <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-zinc-800 hover:text-red-300">
                                     🚪 Çıkış Yap

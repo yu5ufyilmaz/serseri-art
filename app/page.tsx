@@ -49,36 +49,37 @@ export default async function Home() {
                     <h2 className="text-2xl font-bold border-l-4 border-purple-500 pl-4">Yeni Eklenenler</h2>
                 </div>
 
-                {/* auto-rows-fr: Tüm kartlar eşit yükseklikte olsun */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-fr">
 
                     {works?.map((work: any) => (
                         <div key={work.id} className="group bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-600 transition duration-300 flex flex-col h-full">
 
-                            {/* Eser Resmi (shrink-0: Asla küçülmesin, boyutu sabit kalsın) */}
-                            <div className="h-64 w-full relative shrink-0">
+                            {/* Eser Resmi (LİNK İLE SARILDI) */}
+                            <Link href={`/eser/${work.id}`} className="h-64 w-full relative shrink-0 block cursor-pointer">
                                 {work.image_url ? (
                                     <img src={work.image_url} alt={work.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
                                 ) : (
                                     <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-zinc-600">Görsel Yok</div>
                                 )}
 
-                                <Link
-                                    href={`/sanatcilar/${work.artists?.id}`}
-                                    className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full hover:bg-black transition flex items-center gap-1 z-10"
-                                >
-                                    <span>🎨</span>
-                                    <span>{work.artists?.name || 'Anonim'}</span>
-                                </Link>
-                            </div>
+                                {/* Sanatçı Etiketi (Tıklanınca sanatçıya gider, resme tıklanınca esere) */}
+                                <object>
+                                    <Link
+                                        href={`/sanatcilar/${work.artists?.id}`}
+                                        className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full hover:bg-black transition flex items-center gap-1 z-10"
+                                    >
+                                        <span>🎨</span>
+                                        <span>{work.artists?.name || 'Anonim'}</span>
+                                    </Link>
+                                </object>
+                            </Link>
 
-                            {/* Bilgiler ve Butonlar (flex-1: Kalan boşluğu doldur) */}
+                            {/* Bilgiler ve Butonlar */}
                             <div className="p-5 flex flex-col flex-1 bg-zinc-900">
 
                                 <h3 className="text-lg font-bold mb-1 text-white truncate">{work.title || 'İsimsiz Eser'}</h3>
                                 <p className="text-sm text-gray-500 mb-4">Orijinal Eser</p>
 
-                                {/* Alt Kısım (mt-auto: En alta it) */}
                                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-zinc-800 gap-2">
                   <span className="text-xl font-mono font-bold text-green-400 whitespace-nowrap">
                     {work.amount || work.price} ₺
