@@ -15,6 +15,7 @@ export default function GirisPage() {
         e.preventDefault();
         setLoading(true);
 
+        // 1. Giriş Yapmayı Dene
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -23,18 +24,28 @@ export default function GirisPage() {
         if (error) {
             alert('Giriş Başarısız: ' + error.message);
         } else {
-            router.push('/');
-            router.refresh();
+            // 2. KRİTİK KONTROL: E-posta onaylanmış mı?
+            // Supabase bazen girişe izin verir ama biz confirmed_at tarihine bakarız.
+            if (data.user && !data.user.email_confirmed_at) {
+
+                // Onaylanmamışsa hemen çıkış yaptır
+                await supabase.auth.signOut();
+
+                alert('Giriş yapabilmek için lütfen e-postanıza gelen doğrulama linkine tıklayarak hesabınızı onaylayın.');
+            } else {
+                // Her şey yolunda, içeri al
+                router.push('/');
+                router.refresh();
+            }
         }
         setLoading(false);
     };
 
-    // Google ile Giriş Fonksiyonu
     const handleGoogleLogin = async () => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/`, // Giriş yapınca ana sayfaya dön
+                redirectTo: `${window.location.origin}/auth/callback`,
             },
         });
         if (error) alert("Google hatası: " + error.message);
