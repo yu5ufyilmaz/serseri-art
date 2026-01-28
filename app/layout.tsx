@@ -19,12 +19,12 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="tr">
-        <body className={`${inter.className} flex flex-col min-h-screen`}> {/* flex-col ve min-h-screen ekledik */}
+        <body className={`${inter.className} flex flex-col min-h-screen bg-white text-black`}>
         <CartProvider>
             <Navbar />
 
             {/* Ana içerik */}
-            <main className="flex-grow bg-black text-white"> {/* flex-grow ekledik ki footer hep en alta itilsin */}
+            <main className="flex-grow bg-white text-black">
                 {children}
             </main>
 

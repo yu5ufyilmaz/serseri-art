@@ -18,26 +18,25 @@ export default async function Home() {
         .order('name', { ascending: true });
 
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-white text-black">
 
             {/* Hero Bölümü */}
-            <div className="relative bg-zinc-900 border-b border-zinc-800 py-20 px-4 overflow-hidden">
-                <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-0 right-0 w-64 h-64 bg-green-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2"></div>
-
-                <div className="container mx-auto text-center relative z-10">
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-4">
-                        Duvarların Konuşsun.
+            <div className="relative bg-white border-b border-black py-20 px-4">
+                <div className="container mx-auto relative z-10">
+                    <div className="inline-flex items-center bg-[#e10600] text-white px-3 py-1 text-xs font-black uppercase tracking-[0.3em] mb-6">
+                        serseri.art drop
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight mb-6 max-w-4xl">
+                        Duvarların konuşsun. Sokak sanatının yeni vitrini.
                     </h1>
-                    <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-                        Öğrencilerin elinden çıkan, eşi benzeri olmayan eserleri keşfet.
-                        Aracı yok, komisyoncu yok. Sadece sanat var.
+                    <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-10 uppercase tracking-widest">
+                        Öğrencilerin elinden çıkan, eşi benzeri olmayan eserleri keşfet. Aracı yok, komisyoncu yok. Sadece sanat var.
                     </p>
-                    <div className="flex justify-center gap-4">
-                        <Link href="/sanatcilar" className="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-gray-200 transition">
+                    <div className="flex flex-wrap gap-4">
+                        <Link href="/sanatcilar" className="bg-black text-white px-8 py-3 font-bold uppercase tracking-widest hover:bg-[#e10600] transition">
                             Tüm Sanatçılar
                         </Link>
-                        <Link href="/biz-kimiz" className="border border-zinc-700 text-white px-8 py-3 rounded-full font-bold hover:bg-zinc-800 transition">
+                        <Link href="/biz-kimiz" className="border border-black text-black px-8 py-3 font-bold uppercase tracking-widest hover:bg-black hover:text-white transition">
                             Hikayemiz
                         </Link>
                     </div>

@@ -59,13 +59,16 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="w-full bg-black text-white border-b border-zinc-800 relative z-50">
+        <nav className="w-full bg-white text-black border-b border-black relative z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
 
                     {/* LOGO */}
                     <div className="flex-shrink-0">
-                        <Link href="/" className="text-2xl font-bold tracking-tighter hover:text-gray-300 transition">
+                        <Link
+                            href="/"
+                            className="inline-flex items-center bg-[#e10600] text-white px-3 py-1 text-lg font-black uppercase tracking-tight italic"
+                        >
                             serseri.art
                         </Link>
                     </div>
@@ -73,13 +76,13 @@ export default function Navbar() {
                     {/* MASAÜSTÜ MENÜ */}
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-8">
-                            <Link href="/" className="hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <Link href="/" className="hover:text-[#e10600] px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition">
                                 Ana Sayfa
                             </Link>
-                            <Link href="/sanatcilar" className="hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <Link href="/sanatcilar" className="hover:text-[#e10600] px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition">
                                 Sanatçılar
                             </Link>
-                            <Link href="/biz-kimiz" className="hover:text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <Link href="/biz-kimiz" className="hover:text-[#e10600] px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition">
                                 Biz Kimiz
                             </Link>
 
@@ -88,12 +91,12 @@ export default function Navbar() {
                                 <div className="flex items-center gap-4 ml-4">
 
                                     {/* 1. SEPET İKONU */}
-                                    <Link href="/sepet" className="relative p-2 text-gray-400 hover:text-white transition group">
+                                    <Link href="/sepet" className="relative p-2 text-black hover:text-[#e10600] transition group">
                                         <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                         </svg>
                                         {cart.length > 0 && (
-                                            <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
+                                            <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
                                 {cart.length}
                             </span>
                                         )}
@@ -103,9 +106,9 @@ export default function Navbar() {
                                     <div className="relative" ref={profileMenuRef}>
                                         <button
                                             onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                            className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 text-white px-4 py-2 rounded-full hover:bg-zinc-800 transition focus:outline-none"
+                                            className="flex items-center gap-2 bg-white border border-black text-black px-4 py-2 hover:bg-black hover:text-white transition focus:outline-none uppercase text-xs tracking-widest"
                                         >
-                                            <span className="text-sm font-bold">👤 {getUserName()}</span>
+                                            <span className="text-xs font-bold">👤 {getUserName()}</span>
                                             <svg className={`w-4 h-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                             </svg>
@@ -113,8 +116,8 @@ export default function Navbar() {
 
                                         {/* Açılır Kutu (Dropdown) */}
                                         {isProfileOpen && (
-                                            <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl py-1 z-50 overflow-hidden">
-                                                <div className="px-4 py-2 border-b border-zinc-800 text-xs text-gray-500">
+                                            <div className="absolute right-0 mt-2 w-52 bg-white border border-black shadow-xl py-1 z-50 overflow-hidden">
+                                                <div className="px-4 py-2 border-b border-black text-xs uppercase tracking-widest text-gray-500">
                                                     Hesabım
                                                 </div>
 
@@ -123,17 +126,17 @@ export default function Navbar() {
                                                     <Link
                                                         href="/admin"
                                                         onClick={() => setIsProfileOpen(false)}
-                                                        className="block px-4 py-3 text-sm text-purple-400 hover:bg-zinc-800 hover:text-purple-300 transition font-bold border-b border-zinc-800"
+                                                        className="block px-4 py-3 text-xs text-purple-700 hover:bg-black hover:text-white transition font-bold uppercase tracking-widest border-b border-black"
                                                     >
                                                         👑 Yönetim Paneli
                                                     </Link>
                                                 )}
 
-                                                <Link href="/siparislerim" onClick={() => setIsProfileOpen(false)} className="block px-4 py-3 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition">
+                                                <Link href="/siparislerim" onClick={() => setIsProfileOpen(false)} className="block px-4 py-3 text-xs text-black hover:bg-black hover:text-white transition uppercase tracking-widest">
                                                     📦 Siparişlerim
                                                 </Link>
 
-                                                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition">
+                                                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-xs text-[#e10600] hover:bg-black hover:text-white transition uppercase tracking-widest">
                                                     🚪 Çıkış Yap
                                                 </button>
                                             </div>
@@ -141,7 +144,7 @@ export default function Navbar() {
                                     </div>
                                 </div>
                             ) : (
-                                <Link href="/giris" className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition">
+                                <Link href="/giris" className="bg-black text-white px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-[#e10600] transition">
                                     Giriş Yap
                                 </Link>
                             )}
@@ -152,7 +155,7 @@ export default function Navbar() {
                     <div className="-mr-2 flex md:hidden gap-4 items-center">
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-zinc-800 focus:outline-none"
+                            className="inline-flex items-center justify-center p-2 text-black hover:text-[#e10600] focus:outline-none"
                         >
                             <span className="sr-only">Menüyü Aç</span>
                             {!isOpen ? (
@@ -171,19 +174,19 @@ export default function Navbar() {
 
             {/* MOBİL MENÜ LİSTESİ */}
             {isOpen && (
-                <div className="md:hidden bg-zinc-900 border-b border-zinc-800">
+                <div className="md:hidden bg-white border-b border-black">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
-                        <Link href="/" onClick={() => setIsOpen(false)} className="hover:bg-zinc-800 block px-3 py-2 rounded-md text-base font-medium">Ana Sayfa</Link>
-                        <Link href="/sanatcilar" onClick={() => setIsOpen(false)} className="hover:bg-zinc-800 block px-3 py-2 rounded-md text-base font-medium">Sanatçılar</Link>
-                        <Link href="/biz-kimiz" onClick={() => setIsOpen(false)} className="hover:bg-zinc-800 block px-3 py-2 rounded-md text-base font-medium">Biz Kimiz</Link>
+                        <Link href="/" onClick={() => setIsOpen(false)} className="hover:bg-black hover:text-white block px-3 py-2 text-sm font-semibold uppercase tracking-[0.2em]">Ana Sayfa</Link>
+                        <Link href="/sanatcilar" onClick={() => setIsOpen(false)} className="hover:bg-black hover:text-white block px-3 py-2 text-sm font-semibold uppercase tracking-[0.2em]">Sanatçılar</Link>
+                        <Link href="/biz-kimiz" onClick={() => setIsOpen(false)} className="hover:bg-black hover:text-white block px-3 py-2 text-sm font-semibold uppercase tracking-[0.2em]">Biz Kimiz</Link>
 
                         {user ? (
-                            <div className="border-t border-zinc-800 mt-4 pt-4 pb-2">
+                            <div className="border-t border-black mt-4 pt-4 pb-2">
                                 <div className="px-3 flex items-center gap-3 mb-3">
-                                    <div className="w-8 h-8 bg-zinc-700 rounded-full flex items-center justify-center text-sm">👤</div>
+                                    <div className="w-8 h-8 bg-black text-white flex items-center justify-center text-sm">👤</div>
                                     <div>
-                                        <div className="text-white font-bold text-sm">{getUserName()}</div>
-                                        <div className="text-zinc-500 text-xs">{user.email}</div>
+                                        <div className="text-black font-bold text-sm">{getUserName()}</div>
+                                        <div className="text-gray-500 text-xs">{user.email}</div>
                                     </div>
                                 </div>
 
@@ -192,27 +195,27 @@ export default function Navbar() {
                                     <Link
                                         href="/admin"
                                         onClick={() => setIsOpen(false)}
-                                        className="block px-3 py-2 rounded-md text-base font-medium text-purple-400 hover:text-purple-300 hover:bg-zinc-800"
+                                        className="block px-3 py-2 text-sm font-semibold text-purple-700 hover:text-white hover:bg-black uppercase tracking-widest"
                                     >
                                         👑 Yönetim Paneli
                                     </Link>
                                 )}
 
-                                <Link href="/sepet" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800 flex items-center justify-between">
+                                <Link href="/sepet" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-sm font-semibold text-black hover:text-white hover:bg-black flex items-center justify-between uppercase tracking-widest">
                                     <span>🛒 Sepetim</span>
                                     {cart.length > 0 && <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">{cart.length}</span>}
                                 </Link>
 
-                                <Link href="/siparislerim" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-zinc-800">
+                                <Link href="/siparislerim" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-sm font-semibold text-black hover:text-white hover:bg-black uppercase tracking-widest">
                                     📦 Siparişlerim
                                 </Link>
 
-                                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-400 hover:bg-zinc-800 hover:text-red-300">
+                                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="mt-2 w-full text-left px-3 py-2 text-sm font-semibold text-[#e10600] hover:bg-black hover:text-white uppercase tracking-widest">
                                     🚪 Çıkış Yap
                                 </button>
                             </div>
                         ) : (
-                            <Link href="/giris" onClick={() => setIsOpen(false)} className="mt-4 w-full bg-white text-black px-4 py-3 rounded font-bold hover:bg-gray-200 transition text-center block">
+                            <Link href="/giris" onClick={() => setIsOpen(false)} className="mt-4 w-full bg-black text-white px-4 py-3 font-bold uppercase tracking-widest hover:bg-[#e10600] transition text-center block">
                                 Giriş Yap
                             </Link>
                         )}
