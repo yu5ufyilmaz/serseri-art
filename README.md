@@ -18,6 +18,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Koleksiyon Sistemi (Supreme benzeri ana sayfa akışı)
+
+- Ana sayfa sadece koleksiyon ürünü olarak işaretlenen eserleri gösterir.
+- Ürün eklerken veya düzenlerken `Koleksiyon ürünü` seçeneğini açıp bir `Drop/Koleksiyon Adı` verebilirsiniz.
+- Veritabanı alanları ve örnek sanatçı/ürünleri eklemek için Supabase SQL Editor'da `db/collection-schema-and-seed.sql` dosyasını çalıştırın.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

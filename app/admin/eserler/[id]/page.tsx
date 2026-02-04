@@ -12,9 +12,13 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
     // Listeler
     const [artists, setArtists] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
+    const [supportsCollectionFields, setSupportsCollectionFields] = useState(false);
 
     // Form Verileri
-    const [formData, setFormData] = useState<any>({});
+    const [formData, setFormData] = useState<any>({
+        is_collection_item: false,
+        collection_tag: ''
+    });
     const [newMainImage, setNewMainImage] = useState<File | null>(null); // Ana resim değişecekse
 
     // Galeri Yönetimi
@@ -29,9 +33,22 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
     }, [params]);
 
     const fetchData = async (workId: string) => {
+        const { error: collectionFieldError } = await supabase
+            .from('works')
+            .select('is_collection_item')
+            .limit(1);
+        const hasCollectionFields = !collectionFieldError;
+        setSupportsCollectionFields(hasCollectionFields);
+
         // 1. Eser Detayı
         const { data: work } = await supabase.from('works').select('*').eq('id', workId).single();
-        if (work) setFormData(work);
+        if (work) {
+            setFormData({
+                ...work,
+                is_collection_item: Boolean(work.is_collection_item),
+                collection_tag: work.collection_tag || ''
+            });
+        }
 
         // 2. Galeri Resimleri (BU ESERE AİT OLANLAR)
         const { data: gallery } = await supabase.from('work_gallery').select('*').eq('work_id', workId);
@@ -78,6 +95,10 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
     // --- KAYDETME ---
     const handleUpdate = async (e: any) => {
         e.preventDefault();
+        if (supportsCollectionFields && formData.is_collection_item && !String(formData.collection_tag || '').trim()) {
+            alert("Koleksiyon ürünü için bir drop/koleksiyon adı girin.");
+            return;
+        }
         setLoading(true);
 
         try {
@@ -94,13 +115,22 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
             }
 
             // B. ESER BİLGİLERİNİ GÜNCELLE
-            const { error: updateError } = await supabase.from('works').update({
+            const updatePayload: any = {
                 title: formData.title,
                 price: Number(formData.price),
                 artist_id: formData.artist_id,
                 category_id: formData.category_id,
                 image_url: mainImageUrl
-            }).eq('id', id);
+            };
+
+            if (supportsCollectionFields) {
+                updatePayload.is_collection_item = Boolean(formData.is_collection_item);
+                updatePayload.collection_tag = formData.is_collection_item
+                    ? String(formData.collection_tag || '').trim()
+                    : null;
+            }
+
+            const { error: updateError } = await supabase.from('works').update(updatePayload).eq('id', id);
 
             if (updateError) throw updateError;
 
@@ -184,6 +214,40 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
                         </select>
                     </div>
                 </div>
+
+                {supportsCollectionFields && (
+                    <div className="rounded-lg border border-zinc-700 bg-zinc-950/60 p-4 space-y-4">
+                        <label className="flex items-center gap-3 text-white">
+                            <input
+                                type="checkbox"
+                                checked={Boolean(formData.is_collection_item)}
+                                onChange={(e) => setFormData({...formData, is_collection_item: e.target.checked})}
+                                className="h-4 w-4 accent-red-600"
+                            />
+                            <span className="font-bold">Ana sayfa koleksiyonunda göster</span>
+                        </label>
+
+                        {formData.is_collection_item && (
+                            <div>
+                                <label className="text-sm text-gray-400 block mb-2">Drop / Koleksiyon Adı</label>
+                                <input
+                                    type="text"
+                                    value={formData.collection_tag || ''}
+                                    onChange={(e) => setFormData({...formData, collection_tag: e.target.value})}
+                                    className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-red-500 outline-none"
+                                    placeholder="Örn: Winter 26 Drop"
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {!supportsCollectionFields && (
+                    <div className="rounded-lg border border-amber-600/40 bg-amber-950/30 p-4 text-sm text-amber-300">
+                        Koleksiyon alanları henüz aktif değil.
+                        `db/collection-schema-and-seed.sql` dosyasını çalıştırdıktan sonra ürünleri koleksiyon ürünü olarak işaretleyebilirsin.
+                    </div>
+                )}
 
                 {/* 3. GALERİ YÖNETİMİ (MEVCUT RESİMLER) */}
                 <div className="border-t border-zinc-800 pt-6">

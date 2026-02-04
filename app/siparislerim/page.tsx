@@ -1,35 +1,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
+
+type Order = {
+    id: number;
+    product_name: string;
+    status: 'SUCCESS' | string;
+    created_at: string;
+    amount: number;
+};
 
 export default function SiparislerimPage() {
-    const [orders, setOrders] = useState<any[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
         const fetchOrders = async () => {
-            // 1. Önce giriş yapmış kullanıcıyı bul
             const { data: { user } } = await supabase.auth.getUser();
 
             if (!user) {
-                // Giriş yapmamışsa giriş sayfasına at
                 router.push('/giris');
                 return;
             }
 
-            // 2. Bu kullanıcının emailine ait siparişleri çek
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
-                .eq('buyer_email', user.email) // Email eşleşmesi
-                .order('created_at', { ascending: false }); // En yeniden eskiye
+                .eq('buyer_email', user.email)
+                .order('created_at', { ascending: false });
 
             if (error) console.error(error);
-            else setOrders(data || []);
+            else setOrders((data as Order[]) || []);
 
             setLoading(false);
         };
@@ -37,47 +42,46 @@ export default function SiparislerimPage() {
         fetchOrders();
     }, [router]);
 
-    if (loading) return <div className="min-h-screen bg-black text-white p-10 text-center">Yükleniyor...</div>;
+    if (loading) {
+        return <div className="mx-auto max-w-[980px] px-4 py-10">Yükleniyor...</div>;
+    }
 
     return (
-        <div className="min-h-screen bg-black text-white p-4 md:p-10">
-            <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8 border-b border-zinc-800 pb-4">Sipariş Geçmişim</h1>
+        <div className="mx-auto w-full max-w-[980px] px-4 py-10">
+            <h1 className="mb-6 border-b border-[#cfcfcf] pb-3 text-3xl font-black tracking-tight">Siparişlerim</h1>
 
-                {orders.length === 0 ? (
-                    <div className="text-center py-10 text-gray-400">
-                        <p className="mb-4">Henüz hiç siparişin yok.</p>
-                        <Link href="/sanatcilar" className="bg-white text-black px-4 py-2 rounded font-bold hover:bg-gray-200">
-                            Alışverişe Başla
-                        </Link>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        {orders.map((order) => (
-                            <div key={order.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-zinc-700 transition">
-
-                                <div>
-                                    <div className="flex items-center gap-3 mb-1">
-                                        <h3 className="font-bold text-lg text-white">{order.product_name}</h3>
-                                        <span className={`text-xs px-2 py-1 rounded font-bold ${
-                                            order.status === 'SUCCESS' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'
-                                        }`}>
-                        {order.status === 'SUCCESS' ? 'Ödendi' : 'Beklemede'}
-                    </span>
-                                    </div>
-                                    <p className="text-sm text-gray-400">Tarih: {new Date(order.created_at).toLocaleDateString('tr-TR')}</p>
-                                    <p className="text-sm text-gray-500">Sipariş No: #{order.id}</p>
+            {orders.length === 0 ? (
+                <div className="border border-dashed border-[#bdbdbd] bg-[#efefef] p-10 text-center">
+                    <p className="text-sm text-[#666]">Henüz siparişin yok.</p>
+                    <Link href="/sanatcilar" className="mt-4 inline-block border border-[#bdbdbd] px-4 py-2 text-[12px] tracking-[0.12em] hover:border-[#999]">
+                        alışverişe başla
+                    </Link>
+                </div>
+            ) : (
+                <div className="space-y-3">
+                    {orders.map((order) => (
+                        <div key={order.id} className="flex flex-col justify-between gap-3 border border-[#cfcfcf] bg-[#efefef] p-4 md:flex-row md:items-center">
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="font-bold">{order.product_name}</h3>
+                                    <span className={`px-2 py-0.5 text-[10px] tracking-[0.12em] ${
+                                        order.status === 'SUCCESS'
+                                            ? 'bg-[#d9eed6] text-[#2f7030]'
+                                            : 'bg-[#f1e7c6] text-[#7a5e1a]'
+                                    }`}>
+                                        {order.status === 'SUCCESS' ? 'ÖDENDİ' : 'BEKLİYOR'}
+                                    </span>
                                 </div>
-
-                                <div className="text-right">
-                                    <p className="text-xl font-mono font-bold text-green-400">{order.amount} ₺</p>
-                                </div>
-
+                                <p className="mt-1 text-xs text-[#666]">
+                                    {new Date(order.created_at).toLocaleDateString('tr-TR')} / #{order.id}
+                                </p>
                             </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+
+                            <p className="text-xl font-bold">{order.amount} ₺</p>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

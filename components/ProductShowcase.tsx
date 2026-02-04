@@ -1,93 +1,62 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import BuyButton from '@/components/BuyButton';
-import AddToCartButton from '@/components/AddToCartButton';
 
-export default function ProductShowcase({ works, categories }: { works: any[], categories: any[] }) {
-    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+type ShowcaseWork = {
+    id: string | number;
+    title: string;
+    image_url: string | null;
+    collection_tag?: string | null;
+};
 
-    // Filtreleme Mantığı
-    const filteredWorks = selectedCategory === 'all'
-        ? works
-        : works.filter(work => String(work.category_id) === selectedCategory);
+export default function ProductShowcase({ works }: { works: ShowcaseWork[] }) {
+    if (works.length === 0) {
+        return (
+            <div className="mx-auto flex h-[420px] w-full max-w-[720px] items-center justify-center border border-[#cfcfcf] bg-[#f1f1f1]">
+                <p className="text-[12px] tracking-[0.16em] uppercase text-[#6b6b6b]">
+                    koleksiyon boş
+                </p>
+            </div>
+        );
+    }
 
     return (
-        <div className="container mx-auto px-4 py-16">
-
-            {/* --- KATEGORİ FİLTRE BUTONLARI --- */}
-            <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
-                <button
-                    onClick={() => setSelectedCategory('all')}
-                    className={`px-6 py-2 rounded-full font-bold transition border ${
-                        selectedCategory === 'all'
-                            ? 'bg-white text-black border-white'
-                            : 'bg-transparent text-gray-400 border-zinc-700 hover:border-white hover:text-white'
-                    }`}
-                >
-                    Tümü
-                </button>
-                {categories.map((cat) => (
-                    <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(String(cat.id))}
-                        className={`px-6 py-2 rounded-full font-bold transition border ${
-                            selectedCategory === String(cat.id)
-                                ? 'bg-white text-black border-white'
-                                : 'bg-transparent text-gray-400 border-zinc-700 hover:border-white hover:text-white'
-                        }`}
-                    >
-                        {cat.name}
-                    </button>
-                ))}
-            </div>
-
-            {/* --- ÜRÜN LİSTESİ --- */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-fr">
-                {filteredWorks.map((work) => (
-                    <div key={work.id} className="group bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-600 transition duration-300 flex flex-col h-full">
-
-                        <Link href={`/eser/${work.id}`} className="h-64 w-full relative shrink-0 block cursor-pointer">
+        <div className="mx-auto w-full max-w-[720px]">
+            <div className="overflow-x-auto pb-3">
+                <div className="flex h-[430px] min-w-max border border-[#cfcfcf] bg-white">
+                    {works.map((work) => (
+                        <Link
+                            key={work.id}
+                            href={`/eser/${work.id}`}
+                            className="group relative h-full w-[68px] shrink-0 border-r border-[#dadada] last:border-r-0"
+                            title={work.title}
+                        >
                             {work.image_url ? (
-                                <img src={work.image_url} alt={work.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
+                                <img
+                                    src={work.image_url}
+                                    alt={work.title}
+                                    className="h-full w-full object-cover transition group-hover:brightness-110"
+                                />
                             ) : (
-                                <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-zinc-600">Görsel Yok</div>
+                                <div className="flex h-full w-full items-center justify-center bg-[#d4d4d4] text-[10px] uppercase tracking-[0.16em] text-[#666]">
+                                    görsel yok
+                                </div>
                             )}
 
-                            <object>
-                                <Link
-                                    href={`/sanatcilar/${work.artists?.id}`}
-                                    className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full hover:bg-black transition flex items-center gap-1 z-10"
-                                >
-                                    <span>🎨</span>
-                                    <span>{work.artists?.name || 'Anonim'}</span>
-                                </Link>
-                            </object>
+                            <span className="absolute left-1 top-1 bg-[#c8c8c8]/80 px-1.5 py-0.5 text-[10px] leading-none text-white">
+                                yeni
+                            </span>
+
+                            <span className="absolute bottom-8 left-1/2 -translate-x-1/2 -rotate-90 whitespace-nowrap text-[9px] uppercase tracking-[0.18em] text-white/85 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                                {(work.collection_tag || 'seçki').slice(0, 16)}
+                            </span>
                         </Link>
+                    ))}
+                </div>
+            </div>
 
-                        <div className="p-5 flex flex-col flex-1 bg-zinc-900">
-                            <h3 className="text-lg font-bold mb-1 text-white truncate">{work.title}</h3>
-                            <p className="text-sm text-gray-500 mb-4">Orijinal Eser</p>
-
-                            <div className="mt-auto flex items-center justify-between pt-4 border-t border-zinc-800 gap-2">
-                  <span className="text-xl font-mono font-bold text-green-400 whitespace-nowrap">
-                    {work.amount || work.price} ₺
-                  </span>
-                                <div className="flex gap-2 items-center">
-                                    <div className="scale-90"><AddToCartButton product={work} /></div>
-                                    <div className="scale-90 origin-right"><BuyButton price={work.price} productName={work.title} id={work.id} /></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-
-                {filteredWorks.length === 0 && (
-                    <div className="col-span-full text-center py-20 text-gray-500">
-                        <p className="text-xl">Bu kategoride henüz eser yok.</p>
-                    </div>
-                )}
+            <div className="h-[6px] w-full rounded-full bg-[#d2d2d2]">
+                <div className="h-full w-[28%] rounded-full bg-[#b7b7b7]"></div>
             </div>
         </div>
     );

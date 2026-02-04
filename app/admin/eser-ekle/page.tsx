@@ -7,13 +7,16 @@ export default function EserEklePage() {
     const [loading, setLoading] = useState(false);
     const [artists, setArtists] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]); // Kategoriler için state
+    const [supportsCollectionFields, setSupportsCollectionFields] = useState(false);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
 
     const [formData, setFormData] = useState({
         title: '',
         price: '',
         artist_id: '',
-        category_id: '' // Yeni alan
+        category_id: '',
+        is_collection_item: false,
+        collection_tag: ''
     });
 
     useEffect(() => {
@@ -25,6 +28,14 @@ export default function EserEklePage() {
             // Kategorileri çek
             const { data: categoriesData } = await supabase.from('categories').select('id, name');
             if (categoriesData) setCategories(categoriesData);
+
+            // Koleksiyon alanları aktif mi?
+            const { error: collectionFieldError } = await supabase
+                .from('works')
+                .select('is_collection_item')
+                .limit(1);
+
+            setSupportsCollectionFields(!collectionFieldError);
         };
         fetchData();
     }, []);
@@ -45,6 +56,10 @@ export default function EserEklePage() {
             alert("Lütfen bir kategori seçin!");
             return;
         }
+        if (supportsCollectionFields && formData.is_collection_item && !formData.collection_tag.trim()) {
+            alert("Koleksiyon ürünleri için bir drop/koleksiyon adı girin!");
+            return;
+        }
         setLoading(true);
 
         try {
@@ -60,15 +75,24 @@ export default function EserEklePage() {
             }
 
             // 2. Eseri Kaydet (Kategori ID ile)
+            const workPayload: any = {
+                title: formData.title,
+                price: Number(formData.price),
+                artist_id: formData.artist_id,
+                category_id: Number(formData.category_id),
+                image_url: uploadedUrls[0]
+            };
+
+            if (supportsCollectionFields) {
+                workPayload.is_collection_item = formData.is_collection_item;
+                workPayload.collection_tag = formData.is_collection_item
+                    ? formData.collection_tag.trim()
+                    : null;
+            }
+
             const { data: workData, error: dbError } = await supabase
                 .from('works')
-                .insert([{
-                    title: formData.title,
-                    price: Number(formData.price),
-                    artist_id: formData.artist_id,
-                    category_id: Number(formData.category_id), // Kategoriyi ekledik
-                    image_url: uploadedUrls[0]
-                }])
+                .insert([workPayload])
                 .select()
                 .single();
 
@@ -84,7 +108,14 @@ export default function EserEklePage() {
             if (galleryError) throw galleryError;
 
             alert('✅ Eser başarıyla yüklendi!');
-            setFormData({ title: '', price: '', artist_id: '', category_id: '' });
+            setFormData({
+                title: '',
+                price: '',
+                artist_id: '',
+                category_id: '',
+                is_collection_item: false,
+                collection_tag: ''
+            });
             setImageFiles([]);
 
         } catch (error: any) {
@@ -135,6 +166,40 @@ export default function EserEklePage() {
                         {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                     </select>
                 </div>
+
+                {supportsCollectionFields && (
+                    <div className="space-y-4 rounded-lg border border-zinc-700 bg-zinc-950/60 p-4">
+                        <label className="flex items-center gap-3 text-white">
+                            <input
+                                type="checkbox"
+                                checked={formData.is_collection_item}
+                                onChange={(e) => setFormData({...formData, is_collection_item: e.target.checked})}
+                                className="h-4 w-4 accent-red-600"
+                            />
+                            <span className="font-bold">Bu ürün ana sayfada koleksiyonda görünsün</span>
+                        </label>
+
+                        {formData.is_collection_item && (
+                            <div>
+                                <label className="block text-gray-400 mb-2">Drop / Koleksiyon Adı</label>
+                                <input
+                                    type="text"
+                                    value={formData.collection_tag}
+                                    onChange={(e) => setFormData({...formData, collection_tag: e.target.value})}
+                                    className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-red-500"
+                                    placeholder="Örn: Winter 26 Drop"
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {!supportsCollectionFields && (
+                    <div className="rounded-lg border border-amber-600/40 bg-amber-950/30 p-4 text-sm text-amber-300">
+                        Koleksiyon alanları veritabanında henüz aktif görünmüyor.
+                        `db/collection-schema-and-seed.sql` dosyasını bir kez çalıştırırsan bu özellik açılır.
+                    </div>
+                )}
 
                 <div>
                     <label className="block text-gray-400 mb-2">Görseller (Çoklu Seçim)</label>

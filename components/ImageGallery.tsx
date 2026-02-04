@@ -6,14 +6,14 @@ export default function ImageGallery({ images, title }: { images: string[], titl
     // İlk başta listedeki ilk resmi göster
     const [mainImage, setMainImage] = useState(images[0]);
 
-    if (images.length === 0) return <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-zinc-600">Görsel Yok</div>;
+    if (images.length === 0) return <div className="flex h-full w-full items-center justify-center bg-[#d8d8d8] text-[#666]">Görsel Yok</div>;
 
     return (
         <div className="flex flex-col gap-4">
 
             {/* BÜYÜK GÖRSEL ALANI */}
-            <div className="bg-zinc-900 rounded-2xl p-2 border border-zinc-800">
-                <div className="relative w-full aspect-[4/5] md:aspect-square overflow-hidden rounded-xl">
+            <div className="border border-[#d5d5d5] bg-[#f5f5f5] p-2">
+                <div className="relative w-full aspect-[4/5] overflow-hidden border border-[#d7d7d7] bg-[#d8d8d8]">
                     <img
                         src={mainImage}
                         alt={title}
@@ -29,8 +29,10 @@ export default function ImageGallery({ images, title }: { images: string[], titl
                         <button
                             key={index}
                             onClick={() => setMainImage(img)}
-                            className={`relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border-2 transition ${
-                                mainImage === img ? 'border-white opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
+                            className={`relative h-20 w-20 shrink-0 overflow-hidden border transition ${
+                                mainImage === img
+                                    ? 'border-[#909090] opacity-100'
+                                    : 'border-[#dbdbdb] opacity-65 hover:opacity-100'
                             }`}
                         >
                             <img src={img} alt={`${title} ${index}`} className="w-full h-full object-cover" />

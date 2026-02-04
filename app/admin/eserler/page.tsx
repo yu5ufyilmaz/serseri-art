@@ -35,6 +35,7 @@ export default function EserlerYonet() {
                         <th className="p-4">Başlık</th>
                         <th className="p-4">Fiyat</th>
                         <th className="p-4">Sanatçı</th>
+                        <th className="p-4">Koleksiyon</th>
                         <th className="p-4 text-right">İşlem</th>
                     </tr>
                     </thead>
@@ -48,6 +49,20 @@ export default function EserlerYonet() {
                             <td className="p-4 font-bold text-white">{work.title}</td>
                             <td className="p-4 font-mono text-green-400">{work.price} ₺</td>
                             <td className="p-4">{work.artists?.name}</td>
+                            <td className="p-4">
+                                {work.is_collection_item ? (
+                                    <div className="flex flex-col gap-1">
+                                        <span className="inline-flex w-fit px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-600 text-white">
+                                            Koleksiyon
+                                        </span>
+                                        {work.collection_tag && (
+                                            <span className="text-xs text-zinc-400">{work.collection_tag}</span>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <span className="text-xs text-zinc-500">Normal ürün</span>
+                                )}
+                            </td>
                             <td className="p-4 text-right space-x-2">
                                 <Link href={`/admin/eserler/${work.id}`} className="px-3 py-1 bg-yellow-600 text-black font-bold rounded hover:bg-yellow-500">Düzenle</Link>
                                 <button onClick={() => handleDelete(work.id)} className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500">Sil</button>
