@@ -12,8 +12,8 @@ type ShowcaseWork = {
 export default function ProductShowcase({ works }: { works: ShowcaseWork[] }) {
     if (works.length === 0) {
         return (
-            <div className="mx-auto flex h-[420px] w-full max-w-[720px] items-center justify-center border border-[#cfcfcf] bg-[#f1f1f1]">
-                <p className="text-[12px] tracking-[0.16em] uppercase text-[#6b6b6b]">
+            <div className="mx-auto flex h-[280px] w-full max-w-[720px] items-center justify-center border border-[#cfcfcf] bg-[#f1f1f1] sm:h-[420px]">
+                <p className="text-[11px] tracking-[0.16em] uppercase text-[#6b6b6b] sm:text-[12px]">
                     koleksiyon boş
                 </p>
             </div>
@@ -23,12 +23,12 @@ export default function ProductShowcase({ works }: { works: ShowcaseWork[] }) {
     return (
         <div className="mx-auto w-full max-w-[720px]">
             <div className="overflow-x-auto pb-3">
-                <div className="flex h-[430px] min-w-max border border-[#cfcfcf] bg-white">
+                <div className="flex h-[320px] min-w-max border border-[#cfcfcf] bg-white sm:h-[430px]">
                     {works.map((work) => (
                         <Link
                             key={work.id}
                             href={`/eser/${work.id}`}
-                            className="group relative h-full w-[68px] shrink-0 border-r border-[#dadada] last:border-r-0"
+                            className="group relative h-full w-[56px] shrink-0 border-r border-[#dadada] last:border-r-0 sm:w-[68px]"
                             title={work.title}
                         >
                             {work.image_url ? (

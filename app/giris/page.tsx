@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { validateAuthEmail } from '@/lib/authEmailPolicy';
 
 export default function GirisPage() {
     const [email, setEmail] = useState('');
@@ -13,19 +14,48 @@ export default function GirisPage() {
 
     const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const emailCheck = validateAuthEmail(email);
+        if (!emailCheck.ok) {
+            alert(emailCheck.message);
+            return;
+        }
+
+        if (!password.trim()) {
+            alert('Şifre zorunlu.');
+            return;
+        }
+
         setLoading(true);
+        const normalizedEmail = emailCheck.normalizedEmail;
+
+        const resendConfirmationEmail = async () => {
+            await supabase.auth.resend({
+                type: 'signup',
+                email: normalizedEmail,
+                options: {
+                    emailRedirectTo: `${window.location.origin}/giris`,
+                },
+            });
+        };
 
         const { data, error } = await supabase.auth.signInWithPassword({
-            email,
+            email: normalizedEmail,
             password,
         });
 
         if (error) {
-            alert('Giriş başarısız: ' + error.message);
+            const errorText = error.message.toLowerCase();
+            if (errorText.includes('email not confirmed')) {
+                await resendConfirmationEmail();
+                alert('E-posta adresin henüz onaylanmamış. Yeni doğrulama maili gönderdik.');
+            } else {
+                alert('Giriş başarısız: ' + error.message);
+            }
         } else {
             if (data.user && !data.user.email_confirmed_at) {
                 await supabase.auth.signOut();
-                alert('Lütfen e-postana gelen doğrulama linkine tıkla.');
+                await resendConfirmationEmail();
+                alert('E-posta adresin henüz onaylanmamış. Lütfen mailindeki doğrulama linkine tıkla.');
             } else {
                 router.push('/');
                 router.refresh();

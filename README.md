@@ -24,6 +24,11 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 - Ürün eklerken veya düzenlerken `Koleksiyon ürünü` seçeneğini açıp bir `Drop/Koleksiyon Adı` verebilirsiniz.
 - Veritabanı alanları ve örnek sanatçı/ürünleri eklemek için Supabase SQL Editor'da `db/collection-schema-and-seed.sql` dosyasını çalıştırın.
 
+## Auth Notu (E-posta onayı)
+
+- Supabase Dashboard > Authentication > Email bölümünde `Confirm email` ayarını açık tutun.
+- İsterseniz `.env.local` içine `NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS=...` ekleyip sadece belirli uzantılara izin verebilirsiniz.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

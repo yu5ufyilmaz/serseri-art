@@ -67,12 +67,24 @@ export default async function Home() {
 
     return (
         <div className="min-h-screen text-[#1e1e1e]">
-            <div className="mx-auto flex min-h-screen max-w-[980px] flex-col justify-between px-4 py-10 md:py-14">
+            <div className="mx-auto flex min-h-screen max-w-[980px] flex-col justify-between px-4 py-6 sm:py-10 md:py-14">
                 <section>
+                    <div className="mb-6 flex flex-wrap items-center justify-end gap-2 text-[11px] tracking-[0.12em]">
+                        <Link href="/giris" className="border border-[#bdbdbd] px-2.5 py-1 hover:border-[#999]">
+                            giriş
+                        </Link>
+                        <Link href="/kayit" className="border border-[#bdbdbd] px-2.5 py-1 hover:border-[#999]">
+                            kayıt
+                        </Link>
+                        <Link href="/sepet" className="border border-[#bdbdbd] px-2.5 py-1 hover:border-[#999]">
+                            sepet
+                        </Link>
+                    </div>
+
                     <div className="mx-auto flex max-w-[720px] flex-col items-center">
                         <Link
                             href="/"
-                            className="inline-flex items-center justify-center bg-[#ef3218] px-3 py-1 text-[54px] font-black leading-none tracking-tight text-white italic"
+                            className="inline-flex items-center justify-center bg-[#ef3218] px-3 py-1 text-[40px] font-black leading-none tracking-tight text-white italic sm:text-[54px]"
                         >
                             serseri
                         </Link>
@@ -81,17 +93,17 @@ export default async function Home() {
                         </p>
                     </div>
 
-                    <div className="mt-12">
+                    <div className="mt-8 sm:mt-12">
                         <ProductShowcase works={works} />
                     </div>
                 </section>
 
-                <footer className="mx-auto mt-12 flex w-full max-w-[720px] items-center justify-between text-[12px] tracking-[0.12em]">
+                <footer className="mx-auto mt-10 flex w-full max-w-[720px] flex-col items-center justify-between gap-3 text-[12px] tracking-[0.12em] md:mt-12 md:flex-row">
                     <Link href="/" className="hover:underline">
                         ana sayfa
                     </Link>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-center">
                         <span>🇹🇷 TR</span>
                         <Link href="/sanatcilar" className="hover:underline">tüm ürünler</Link>
                         <Link href="/biz-kimiz" className="hover:underline">kargo</Link>

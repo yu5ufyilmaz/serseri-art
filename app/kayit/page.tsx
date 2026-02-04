@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { validateAuthEmail } from '@/lib/authEmailPolicy';
 
 export default function KayitPage() {
     const [name, setName] = useState('');
@@ -14,25 +15,59 @@ export default function KayitPage() {
 
     const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
+        const emailCheck = validateAuthEmail(email);
+        if (!emailCheck.ok) {
+            alert(emailCheck.message);
+            return;
+        }
 
-        const { error } = await supabase.auth.signUp({
-            email,
+        if (password.length < 8) {
+            alert('Şifre en az 8 karakter olmalı.');
+            return;
+        }
+
+        setLoading(true);
+        const normalizedEmail = emailCheck.normalizedEmail;
+        const emailRedirectTo = `${window.location.origin}/giris`;
+
+        const resendConfirmationEmail = async () => {
+            await supabase.auth.resend({
+                type: 'signup',
+                email: normalizedEmail,
+                options: {
+                    emailRedirectTo,
+                },
+            });
+        };
+
+        const { data, error } = await supabase.auth.signUp({
+            email: normalizedEmail,
             password,
             options: {
                 data: {
-                    full_name: name,
+                    full_name: name.trim(),
                 },
+                emailRedirectTo,
             },
         });
 
         if (error) {
             alert('Hata: ' + error.message);
-        } else {
-            alert('Kayıt başarılı. Lütfen e-posta doğrulama linkine tıkla.');
-            router.push('/giris');
+            setLoading(false);
+            return;
         }
 
+        // Supabase, var olan kullanıcıda güvenlik sebebiyle sessiz dönebilir.
+        // identities boşsa kullanıcı zaten var kabul edip doğrulama maili tekrar gönderiyoruz.
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+            await resendConfirmationEmail();
+            alert('Bu e-posta ile daha önce kayıt var. Doğrulama mailini tekrar gönderdik.');
+        } else {
+            await supabase.auth.signOut();
+            alert('Kayıt başarılı. Lütfen e-postana gelen doğrulama linkine tıkla.');
+        }
+
+        router.push('/giris');
         setLoading(false);
     };
 
