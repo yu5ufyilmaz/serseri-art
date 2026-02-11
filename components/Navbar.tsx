@@ -73,7 +73,7 @@ export default function Navbar() {
                     <Link href="/" className="hover:underline">ana sayfa</Link>
                     <Link href="/sanatcilar" className="hover:underline">sanatçılar</Link>
                     <Link href="/biz-kimiz" className="hover:underline">hakkımızda</Link>
-                    <span>🇹🇷 İstanbul</span>
+                    <span>🇹🇷 Bodrum</span>
 
                     {user ? (
                         <div className="ml-2 flex items-center gap-3">
@@ -152,7 +152,7 @@ export default function Navbar() {
                         <Link href="/" onClick={() => setIsOpen(false)} className="hover:underline">ana sayfa</Link>
                         <Link href="/sanatcilar" onClick={() => setIsOpen(false)} className="hover:underline">sanatçılar</Link>
                         <Link href="/biz-kimiz" onClick={() => setIsOpen(false)} className="hover:underline">hakkımızda</Link>
-                        <span>🇹🇷 İstanbul</span>
+                        <span>🇹🇷 Bodrum</span>
 
                         {user ? (
                             <>

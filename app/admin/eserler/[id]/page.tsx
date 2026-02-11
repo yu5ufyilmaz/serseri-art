@@ -165,50 +165,50 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
         }
     };
 
-    if (loading) return <div className="text-white p-10">Yükleniyor...</div>;
+    if (loading) return <div className="text-[#1e1e1e] p-10">Yükleniyor...</div>;
 
     return (
         <div className="max-w-3xl mx-auto pb-20">
-            <h1 className="text-2xl font-bold mb-6 text-yellow-400">Eseri Düzenle</h1>
+            <h1 className="text-[22px] font-semibold tracking-tight mb-6 text-[#1e1e1e]">Eseri Düzenle</h1>
 
-            <form onSubmit={handleUpdate} className="space-y-8 bg-zinc-900 p-8 rounded-xl border border-zinc-800">
+            <form onSubmit={handleUpdate} className="space-y-8 bg-white p-6 sm:p-8 rounded-sm border border-[#cfcfcf]">
 
                 {/* 1. ANA RESİM ALANI */}
-                <div className="flex flex-col items-center gap-4 border-b border-zinc-800 pb-6">
-                    <span className="text-gray-400 text-sm">Kapak Görseli</span>
-                    <div className="h-48 w-auto rounded-lg overflow-hidden border-2 border-zinc-700 relative group">
+                <div className="flex flex-col items-center gap-4 border-b border-[#e2e2e2] pb-6">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b]">Kapak Görseli</span>
+                    <div className="h-48 w-auto rounded-sm overflow-hidden border border-[#cfcfcf] relative group bg-[#f3f3f3]">
                         <img src={newMainImage ? URL.createObjectURL(newMainImage) : formData.image_url} className="h-full object-contain" />
                         {/* Üzerine gelince değiştir ikonu */}
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <span className="text-white text-sm">Değiştir</span>
+                        <div className="absolute inset-0 bg-white/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <span className="text-[#1e1e1e] text-xs uppercase tracking-[0.18em]">Değiştir</span>
                         </div>
                     </div>
-                    <input type="file" accept="image/*" onChange={handleMainImageChange} className="text-sm text-gray-500" />
+                    <input type="file" accept="image/*" onChange={handleMainImageChange} className="text-xs uppercase tracking-[0.18em] text-[#8a8a8a]" />
                 </div>
 
                 {/* 2. BİLGİ ALANLARI */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="text-sm text-gray-400 block mb-2">Eser Adı</label>
+                        <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Eser Adı</label>
                         <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})}
-                               className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-yellow-500 outline-none" />
+                               className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none" />
                     </div>
                     <div>
-                        <label className="text-sm text-gray-400 block mb-2">Fiyat (TL)</label>
+                        <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Fiyat (TL)</label>
                         <input type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})}
-                               className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-yellow-500 outline-none" />
+                               className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none" />
                     </div>
                     <div>
-                        <label className="text-sm text-gray-400 block mb-2">Sanatçı</label>
+                        <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Sanatçı</label>
                         <select value={formData.artist_id} onChange={e => setFormData({...formData, artist_id: e.target.value})}
-                                className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-yellow-500 outline-none appearance-none">
+                                className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none appearance-none">
                             {artists.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                         </select>
                     </div>
                     <div>
-                        <label className="text-sm text-gray-400 block mb-2">Kategori</label>
+                        <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Kategori</label>
                         <select value={formData.category_id || ''} onChange={e => setFormData({...formData, category_id: e.target.value})}
-                                className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-yellow-500 outline-none appearance-none">
+                                className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none appearance-none">
                             <option value="">Kategori Seçin</option>
                             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
@@ -216,25 +216,25 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
                 </div>
 
                 {supportsCollectionFields && (
-                    <div className="rounded-lg border border-zinc-700 bg-zinc-950/60 p-4 space-y-4">
-                        <label className="flex items-center gap-3 text-white">
+                    <div className="rounded-sm border border-[#d4d4d4] bg-[#f4f4f4] p-4 space-y-4">
+                        <label className="flex items-center gap-3 text-[#1e1e1e]">
                             <input
                                 type="checkbox"
                                 checked={Boolean(formData.is_collection_item)}
                                 onChange={(e) => setFormData({...formData, is_collection_item: e.target.checked})}
-                                className="h-4 w-4 accent-red-600"
+                                className="h-4 w-4 accent-[#ef3218]"
                             />
-                            <span className="font-bold">Ana sayfa koleksiyonunda göster</span>
+                            <span className="font-semibold">Ana sayfa koleksiyonunda göster</span>
                         </label>
 
                         {formData.is_collection_item && (
                             <div>
-                                <label className="text-sm text-gray-400 block mb-2">Drop / Koleksiyon Adı</label>
+                                <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Drop / Koleksiyon Adı</label>
                                 <input
                                     type="text"
                                     value={formData.collection_tag || ''}
                                     onChange={(e) => setFormData({...formData, collection_tag: e.target.value})}
-                                    className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-red-500 outline-none"
+                                    className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#ef3218] outline-none"
                                     placeholder="Örn: Winter 26 Drop"
                                 />
                             </div>
@@ -243,28 +243,28 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
                 )}
 
                 {!supportsCollectionFields && (
-                    <div className="rounded-lg border border-amber-600/40 bg-amber-950/30 p-4 text-sm text-amber-300">
+                    <div className="rounded-sm border border-amber-600/40 bg-amber-200/40 p-4 text-sm text-amber-900">
                         Koleksiyon alanları henüz aktif değil.
                         `db/collection-schema-and-seed.sql` dosyasını çalıştırdıktan sonra ürünleri koleksiyon ürünü olarak işaretleyebilirsin.
                     </div>
                 )}
 
                 {/* 3. GALERİ YÖNETİMİ (MEVCUT RESİMLER) */}
-                <div className="border-t border-zinc-800 pt-6">
-                    <label className="text-sm text-gray-400 block mb-4">Galeri Resimleri (Mevcut)</label>
+                <div className="border-t border-[#e2e2e2] pt-6">
+                    <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-4">Galeri Resimleri (Mevcut)</label>
 
                     {galleryImages.length === 0 ? (
-                        <p className="text-sm text-zinc-600 italic">Bu eserin ek görseli yok.</p>
+                        <p className="text-sm text-[#8a8a8a] italic">Bu eserin ek görseli yok.</p>
                     ) : (
                         <div className="flex flex-wrap gap-4">
                             {galleryImages.map((img) => (
-                                <div key={img.id} className="relative group w-24 h-24 rounded-lg overflow-hidden border border-zinc-700">
+                                <div key={img.id} className="relative group w-24 h-24 rounded-sm overflow-hidden border border-[#cfcfcf] bg-[#f3f3f3]">
                                     <img src={img.image_url} className="w-full h-full object-cover" />
                                     {/* Silme Butonu */}
                                     <button
                                         type="button"
                                         onClick={() => handleDeleteGalleryImage(img.id)}
-                                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition transform hover:scale-110"
+                                        className="absolute top-1 right-1 bg-[#ef3218] text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition transform hover:scale-110"
                                         title="Resmi Sil"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -276,23 +276,23 @@ export default function EserDuzenle({ params }: { params: Promise<{ id: string }
                 </div>
 
                 {/* 4. YENİ RESİM EKLEME */}
-                <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 border-dashed">
-                    <label className="text-sm text-gray-300 block mb-2 font-bold">+ Galeriye Yeni Resim Ekle</label>
+                <div className="bg-white p-4 rounded-sm border border-[#cfcfcf] border-dashed">
+                    <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">+ Galeriye Yeni Resim Ekle</label>
                     <input
                         type="file"
                         accept="image/*"
                         multiple
                         onChange={handleGalleryFilesChange}
-                        className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-600 file:text-black hover:file:bg-yellow-500 cursor-pointer"
+                        className="w-full text-xs uppercase tracking-[0.18em] text-[#8a8a8a] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:uppercase file:tracking-[0.18em] file:bg-[#1e1e1e] file:text-white hover:file:bg-black cursor-pointer"
                     />
                     {newGalleryFiles.length > 0 && (
-                        <p className="text-xs text-green-400 mt-2">{newGalleryFiles.length} yeni dosya seçildi (Kaydet'e basınca yüklenecek)</p>
+                        <p className="text-xs text-[#1e1e1e] mt-2">{newGalleryFiles.length} yeni dosya seçildi (Kaydet'e basınca yüklenecek)</p>
                     )}
                 </div>
 
                 <div className="flex gap-4 pt-4">
-                    <button type="button" onClick={() => router.back()} className="px-6 py-3 rounded font-bold text-gray-400 hover:text-white transition">Vazgeç</button>
-                    <button disabled={loading} type="submit" className="flex-1 bg-yellow-600 text-black py-3 rounded font-bold hover:bg-yellow-500 transition">
+                    <button type="button" onClick={() => router.back()} className="px-6 py-3 rounded-sm border border-[#cfcfcf] text-[#6b6b6b] hover:text-[#1e1e1e] hover:border-[#1e1e1e] transition">Vazgeç</button>
+                    <button disabled={loading} type="submit" className="flex-1 bg-[#1e1e1e] text-white py-3 rounded-sm font-semibold hover:bg-black transition">
                         {loading ? 'İşleniyor...' : 'Değişiklikleri Kaydet'}
                     </button>
                 </div>

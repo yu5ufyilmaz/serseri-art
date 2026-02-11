@@ -26,67 +26,72 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }, [router]);
 
     // Linkin aktif olup olmadığını kontrol eden küçük bir fonksiyon
-    const isActive = (path: string) => pathname === path ? "bg-zinc-800 text-white" : "text-gray-400 hover:text-white hover:bg-zinc-900";
+    const isActive = (path: string) =>
+        pathname === path
+            ? "bg-white text-[#1e1e1e] border border-[#cfcfcf]"
+            : "text-[#6b6b6b] hover:text-[#1e1e1e] hover:bg-white/70";
 
-    if (loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Yetki Kontrolü...</div>;
+    if (loading) return <div className="min-h-screen bg-[#e6e6e6] text-[#1e1e1e] flex items-center justify-center">Yetki Kontrolü...</div>;
 
     return (
-        <div className="min-h-screen bg-black text-white flex">
+        <div className="min-h-screen bg-[#e6e6e6] text-[#1e1e1e] flex">
 
             {/* --- SOL MENÜ (SIDEBAR) --- */}
-            <aside className="w-64 border-r border-zinc-800 p-6 hidden md:flex flex-col h-screen sticky top-0">
+            <aside className="w-64 border-r border-[#d2d2d2] bg-[#ededed] p-6 hidden md:flex flex-col h-screen sticky top-0">
 
-                <div className="mb-8 flex items-center gap-2 text-purple-500">
-                    <span className="text-2xl">👑</span>
-                    <h2 className="text-xl font-bold">Yönetim</h2>
+                <div className="mb-8">
+                    <span className="inline-flex items-center bg-[#ef3218] px-2 py-1 text-[20px] font-black italic leading-none text-white">
+                        serseri
+                    </span>
+                    <p className="mt-2 text-[12px] uppercase tracking-[0.2em] text-[#6b6b6b]">yönetim</p>
                 </div>
 
                 <nav className="space-y-8 flex-1">
 
                     {/* GRUP 1: GENEL */}
                     <div>
-                        <p className="text-xs text-zinc-600 uppercase font-bold mb-3 px-2">Genel</p>
-                        <Link href="/admin" className={`block p-2 rounded transition mb-1 ${isActive('/admin')}`}>
-                            📊 Panelo
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-[#8a8a8a] mb-3 px-2">Genel</p>
+                        <Link href="/admin" className={`block px-3 py-2 rounded-sm transition mb-1 ${isActive('/admin')}`}>
+                            Panel
                         </Link>
-                        <Link href="/" className="block p-2 rounded text-gray-400 hover:text-white hover:bg-zinc-900 transition">
-                            🏠 Siteyi Görüntüle
+                        <Link href="/" className="block px-3 py-2 rounded-sm text-[#6b6b6b] hover:text-[#1e1e1e] hover:bg-white/70 transition">
+                            Siteyi Görüntüle
                         </Link>
                     </div>
 
                     {/* GRUP 2: SANATÇILAR */}
                     <div>
-                        <p className="text-xs text-zinc-600 uppercase font-bold mb-3 px-2">Sanatçılar</p>
-                        <Link href="/admin/sanatcilar" className={`block p-2 rounded transition mb-1 flex items-center gap-2 ${isActive('/admin/sanatcilar')}`}>
-                            👥 Listele / Düzenle
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-[#8a8a8a] mb-3 px-2">Sanatçılar</p>
+                        <Link href="/admin/sanatcilar" className={`block px-3 py-2 rounded-sm transition mb-1 ${isActive('/admin/sanatcilar')}`}>
+                            Listele / Düzenle
                         </Link>
-                        <Link href="/admin/sanatci-ekle" className={`block p-2 rounded transition flex items-center gap-2 ${isActive('/admin/sanatci-ekle')}`}>
-                            ➕ Yeni Ekle
+                        <Link href="/admin/sanatci-ekle" className={`block px-3 py-2 rounded-sm transition ${isActive('/admin/sanatci-ekle')}`}>
+                            Yeni Ekle
                         </Link>
                     </div>
 
                     {/* GRUP 3: ESERLER */}
                     <div>
-                        <p className="text-xs text-zinc-600 uppercase font-bold mb-3 px-2">Eserler</p>
-                        <Link href="/admin/eserler" className={`block p-2 rounded transition mb-1 flex items-center gap-2 ${isActive('/admin/eserler')}`}>
-                            📦 Listele / Düzenle
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-[#8a8a8a] mb-3 px-2">Eserler</p>
+                        <Link href="/admin/eserler" className={`block px-3 py-2 rounded-sm transition mb-1 ${isActive('/admin/eserler')}`}>
+                            Listele / Düzenle
                         </Link>
-                        <Link href="/admin/eser-ekle" className={`block p-2 rounded transition flex items-center gap-2 ${isActive('/admin/eser-ekle')}`}>
-                            ➕ Yeni Ekle
+                        <Link href="/admin/eser-ekle" className={`block px-3 py-2 rounded-sm transition ${isActive('/admin/eser-ekle')}`}>
+                            Yeni Ekle
                         </Link>
                     </div>
 
                 </nav>
 
                 {/* ALT KISIM */}
-                <div className="pt-6 border-t border-zinc-800">
-                    <p className="text-xs text-zinc-600">Serseri Art Admin v1.0</p>
+                <div className="pt-6 border-t border-[#d2d2d2]">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-[#8a8a8a]">Serseri Art Admin</p>
                 </div>
 
             </aside>
 
             {/* --- İÇERİK ALANI --- */}
-            <main className="flex-1 p-8 overflow-y-auto h-screen bg-black">
+            <main className="flex-1 p-6 md:p-8 overflow-y-auto h-screen bg-[#e6e6e6]">
                 {children}
             </main>
 

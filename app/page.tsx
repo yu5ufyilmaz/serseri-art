@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import ProductShowcase from '@/components/ProductShowcase';
+import LiveClock from '@/components/LiveClock';
+import HomeQuickActions from '@/components/HomeQuickActions';
 
 type HomeWork = {
     id: string | number;
@@ -50,36 +52,11 @@ export default async function Home() {
         }
     }
 
-    const istanbulNow = new Date();
-    const dateLabel = new Intl.DateTimeFormat('tr-TR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        timeZone: 'Europe/Istanbul'
-    }).format(istanbulNow);
-
-    const timeLabel = new Intl.DateTimeFormat('tr-TR', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-        timeZone: 'Europe/Istanbul'
-    }).format(istanbulNow);
-
     return (
         <div className="min-h-screen text-[#1e1e1e]">
             <div className="mx-auto flex min-h-screen max-w-[980px] flex-col justify-between px-4 py-6 sm:py-10 md:py-14">
                 <section>
-                    <div className="mb-6 flex flex-wrap items-center justify-end gap-2 text-[11px] tracking-[0.12em]">
-                        <Link href="/giris" className="border border-[#bdbdbd] px-2.5 py-1 hover:border-[#999]">
-                            giriş
-                        </Link>
-                        <Link href="/kayit" className="border border-[#bdbdbd] px-2.5 py-1 hover:border-[#999]">
-                            kayıt
-                        </Link>
-                        <Link href="/sepet" className="border border-[#bdbdbd] px-2.5 py-1 hover:border-[#999]">
-                            sepet
-                        </Link>
-                    </div>
+                    <HomeQuickActions />
 
                     <div className="mx-auto flex max-w-[720px] flex-col items-center">
                         <Link
@@ -89,7 +66,7 @@ export default async function Home() {
                             serseri
                         </Link>
                         <p className="mt-4 text-[12px] tracking-[0.16em]">
-                            {dateLabel} {timeLabel} İSTANBUL
+                            <LiveClock />
                         </p>
                     </div>
 

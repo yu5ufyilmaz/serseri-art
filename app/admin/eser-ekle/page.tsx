@@ -127,29 +127,29 @@ export default function EserEklePage() {
 
     return (
         <div className="max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-8 text-green-400">Yeni Eser Yükle</h1>
+            <h1 className="text-[26px] font-semibold tracking-tight mb-6 text-[#1e1e1e]">Yeni Eser Ekle</h1>
 
-            <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-900 p-8 rounded-xl border border-zinc-800">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 sm:p-8 rounded-sm border border-[#cfcfcf]">
 
                 <div>
-                    <label className="block text-gray-400 mb-2">Eser Adı</label>
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Eser Adı</label>
                     <input required type="text" value={formData.title}
                            onChange={(e) => setFormData({...formData, title: e.target.value})}
-                           className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-green-500" placeholder="Örn: Gece Yürüyüşü" />
+                           className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e]" placeholder="Örn: Gece Yürüyüşü" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-gray-400 mb-2">Fiyat (TL)</label>
+                        <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Fiyat (TL)</label>
                         <input required type="number" value={formData.price}
                                onChange={(e) => setFormData({...formData, price: e.target.value})}
-                               className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-green-500" placeholder="500" />
+                               className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e]" placeholder="500" />
                     </div>
                     <div>
-                        <label className="block text-gray-400 mb-2">Sanatçı</label>
+                        <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Sanatçı</label>
                         <select required value={formData.artist_id}
                                 onChange={(e) => setFormData({...formData, artist_id: e.target.value})}
-                                className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-green-500 appearance-none">
+                                className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e] appearance-none">
                             <option value="">Seçiniz...</option>
                             {artists.map(artist => <option key={artist.id} value={artist.id}>{artist.name}</option>)}
                         </select>
@@ -158,35 +158,35 @@ export default function EserEklePage() {
 
                 {/* KATEGORİ SEÇİMİ (YENİ) */}
                 <div>
-                    <label className="block text-gray-400 mb-2">Kategori</label>
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Kategori</label>
                     <select required value={formData.category_id}
                             onChange={(e) => setFormData({...formData, category_id: e.target.value})}
-                            className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-green-500 appearance-none">
+                            className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e] appearance-none">
                         <option value="">Kategori Seçiniz...</option>
                         {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                     </select>
                 </div>
 
                 {supportsCollectionFields && (
-                    <div className="space-y-4 rounded-lg border border-zinc-700 bg-zinc-950/60 p-4">
-                        <label className="flex items-center gap-3 text-white">
+                    <div className="space-y-4 rounded-sm border border-[#d4d4d4] bg-[#f4f4f4] p-4">
+                        <label className="flex items-center gap-3 text-[#1e1e1e]">
                             <input
                                 type="checkbox"
                                 checked={formData.is_collection_item}
                                 onChange={(e) => setFormData({...formData, is_collection_item: e.target.checked})}
-                                className="h-4 w-4 accent-red-600"
+                                className="h-4 w-4 accent-[#ef3218]"
                             />
-                            <span className="font-bold">Bu ürün ana sayfada koleksiyonda görünsün</span>
+                            <span className="font-semibold">Bu ürün ana sayfada koleksiyonda görünsün</span>
                         </label>
 
                         {formData.is_collection_item && (
                             <div>
-                                <label className="block text-gray-400 mb-2">Drop / Koleksiyon Adı</label>
+                                <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Drop / Koleksiyon Adı</label>
                                 <input
                                     type="text"
                                     value={formData.collection_tag}
                                     onChange={(e) => setFormData({...formData, collection_tag: e.target.value})}
-                                    className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-red-500"
+                                    className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#ef3218]"
                                     placeholder="Örn: Winter 26 Drop"
                                 />
                             </div>
@@ -195,24 +195,26 @@ export default function EserEklePage() {
                 )}
 
                 {!supportsCollectionFields && (
-                    <div className="rounded-lg border border-amber-600/40 bg-amber-950/30 p-4 text-sm text-amber-300">
+                    <div className="rounded-sm border border-amber-600/40 bg-amber-200/40 p-4 text-sm text-amber-900">
                         Koleksiyon alanları veritabanında henüz aktif görünmüyor.
                         `db/collection-schema-and-seed.sql` dosyasını bir kez çalıştırırsan bu özellik açılır.
                     </div>
                 )}
 
                 <div>
-                    <label className="block text-gray-400 mb-2">Görseller (Çoklu Seçim)</label>
-                    <div className="relative border-2 border-dashed border-zinc-700 rounded-lg p-6 hover:border-green-500 transition cursor-pointer">
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Görseller (Çoklu Seçim)</label>
+                    <div className="relative border-2 border-dashed border-[#cfcfcf] rounded-sm p-6 hover:border-[#1e1e1e] transition cursor-pointer bg-white">
                         <input type="file" accept="image/*" multiple onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                         <div className="text-center">
-                            <span className="text-4xl mb-2 block">📸</span>
-                            <p className="text-sm text-gray-400">{imageFiles.length > 0 ? `${imageFiles.length} dosya seçildi` : "Resimleri buraya sürükle veya tıkla"}</p>
+                            <span className="text-3xl mb-2 block">📸</span>
+                            <p className="text-xs uppercase tracking-[0.18em] text-[#8a8a8a]">
+                                {imageFiles.length > 0 ? `${imageFiles.length} dosya seçildi` : "Resimleri buraya sürükle veya tıkla"}
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <button disabled={loading} type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition">
+                <button disabled={loading} type="submit" className="w-full bg-[#1e1e1e] hover:bg-black text-white font-semibold py-3 rounded-sm transition">
                     {loading ? 'Yükleniyor...' : 'Eseri Yayınla'}
                 </button>
 

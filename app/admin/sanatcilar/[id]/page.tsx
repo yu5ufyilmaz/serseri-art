@@ -80,46 +80,46 @@ export default function SanatciDuzenle({ params }: { params: Promise<{ id: strin
         }
     };
 
-    if (loading) return <div className="text-white p-10">Yükleniyor...</div>;
+    if (loading) return <div className="text-[#1e1e1e] p-10">Yükleniyor...</div>;
 
     return (
         <div className="max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold mb-6 text-blue-400">Sanatçıyı Düzenle</h1>
+            <h1 className="text-[22px] font-semibold tracking-tight mb-6 text-[#1e1e1e]">Sanatçıyı Düzenle</h1>
 
-            <form onSubmit={handleUpdate} className="space-y-6 bg-zinc-900 p-8 rounded-xl border border-zinc-800">
+            <form onSubmit={handleUpdate} className="space-y-6 bg-white p-6 sm:p-8 rounded-sm border border-[#cfcfcf]">
 
                 {/* Mevcut Resim Gösterimi */}
                 <div className="flex justify-center mb-6">
-                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-zinc-700">
+                    <div className="w-32 h-32 rounded-full overflow-hidden border border-[#cfcfcf] bg-[#f3f3f3]">
                         <img src={newImageFile ? URL.createObjectURL(newImageFile) : formData.image_url} className="w-full h-full object-cover" />
                     </div>
                 </div>
 
                 <div>
-                    <label className="text-sm text-gray-400 block mb-2">İsim</label>
+                    <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">İsim</label>
                     <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
-                           className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-blue-500 outline-none" />
+                           className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none" />
                 </div>
 
                 <div>
-                    <label className="text-sm text-gray-400 block mb-2">Bölüm</label>
+                    <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Bölüm</label>
                     <input type="text" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})}
-                           className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-blue-500 outline-none" />
+                           className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none" />
                 </div>
 
                 <div>
-                    <label className="text-sm text-gray-400 block mb-2">Yeni Fotoğraf (İsteğe Bağlı)</label>
+                    <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Yeni Fotoğraf (İsteğe Bağlı)</label>
                     <input type="file" accept="image/*" onChange={handleImageChange}
-                           className="w-full bg-black border border-zinc-700 rounded p-3 text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" />
+                           className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#8a8a8a] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:uppercase file:tracking-[0.18em] file:bg-[#1e1e1e] file:text-white hover:file:bg-black cursor-pointer" />
                 </div>
 
                 <div>
-                    <label className="text-sm text-gray-400 block mb-2">Biyografi</label>
+                    <label className="text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] block mb-2">Biyografi</label>
                     <textarea rows={5} value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})}
-                              className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-blue-500 outline-none resize-none" />
+                              className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] focus:border-[#1e1e1e] outline-none resize-none" />
                 </div>
 
-                <button disabled={loading} type="submit" className="w-full bg-blue-600 py-3 rounded font-bold hover:bg-blue-500 transition text-white">
+                <button disabled={loading} type="submit" className="w-full bg-[#1e1e1e] py-3 rounded-sm font-semibold hover:bg-black transition text-white">
                     {loading ? 'Güncelleniyor...' : 'Güncelle'}
                 </button>
             </form>

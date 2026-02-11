@@ -72,30 +72,30 @@ export default function SanatciEklePage() {
 
     return (
         <div className="max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-8 text-purple-400">Yeni Sanatçı Ekle</h1>
+            <h1 className="text-[26px] font-semibold tracking-tight mb-6 text-[#1e1e1e]">Yeni Sanatçı Ekle</h1>
 
-            <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-900 p-8 rounded-xl border border-zinc-800">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 sm:p-8 rounded-sm border border-[#cfcfcf]">
 
                 <div>
-                    <label className="block text-gray-400 mb-2">Sanatçı Adı</label>
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Sanatçı Adı</label>
                     <input required type="text" value={formData.name}
                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                           className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-purple-500"
+                           className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e]"
                            placeholder="Örn: Ahmet Yılmaz" />
                 </div>
 
                 <div>
-                    <label className="block text-gray-400 mb-2">Bölümü</label>
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Bölümü</label>
                     <input required type="text" value={formData.department}
                            onChange={(e) => setFormData({...formData, department: e.target.value})}
-                           className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-purple-500"
+                           className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e]"
                            placeholder="Örn: Heykel" />
                 </div>
 
                 {/* DOSYA YÜKLEME ALANI (Yeni) */}
                 <div>
-                    <label className="block text-gray-400 mb-2">Profil Fotoğrafı</label>
-                    <div className="relative border-2 border-dashed border-zinc-700 rounded-lg p-6 hover:border-purple-500 transition group cursor-pointer">
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Profil Fotoğrafı</label>
+                    <div className="relative border-2 border-dashed border-[#cfcfcf] rounded-sm p-6 hover:border-[#1e1e1e] transition group cursor-pointer bg-white">
                         <input
                             type="file"
                             accept="image/*"
@@ -103,8 +103,8 @@ export default function SanatciEklePage() {
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         />
                         <div className="text-center">
-                            <span className="text-4xl mb-2 block">📸</span>
-                            <p className="text-sm text-gray-400 group-hover:text-white transition">
+                            <span className="text-3xl mb-2 block">📸</span>
+                            <p className="text-xs uppercase tracking-[0.18em] text-[#8a8a8a] group-hover:text-[#1e1e1e] transition">
                                 {imageFile ? `Seçilen: ${imageFile.name}` : "Fotoğrafı buraya bırak veya seç"}
                             </p>
                         </div>
@@ -112,14 +112,14 @@ export default function SanatciEklePage() {
                 </div>
 
                 <div>
-                    <label className="block text-gray-400 mb-2">Biyografi</label>
+                    <label className="block text-[11px] uppercase tracking-[0.18em] text-[#6b6b6b] mb-2">Biyografi</label>
                     <textarea required rows={4} value={formData.bio}
                               onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                              className="w-full bg-black border border-zinc-700 rounded p-3 text-white outline-none focus:border-purple-500 resize-none"
+                              className="w-full bg-white border border-[#cfcfcf] rounded-sm p-3 text-[#1e1e1e] outline-none focus:border-[#1e1e1e] resize-none"
                               placeholder="Sanatçı hakkında kısa bilgi..." />
                 </div>
 
-                <button disabled={loading} type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded transition">
+                <button disabled={loading} type="submit" className="w-full bg-[#1e1e1e] hover:bg-black text-white font-semibold py-3 rounded-sm transition">
                     {loading ? 'Kaydediliyor...' : 'Kaydet'}
                 </button>
 
