@@ -84,8 +84,8 @@ export default async function Home() {
                         <span>🇹🇷 TR</span>
                         <Link href="/sanatcilar" className="hover:underline">tüm ürünler</Link>
                         <Link href="/biz-kimiz" className="hover:underline">kargo</Link>
-                        <Link href="/biz-kimiz" className="hover:underline">şartlar</Link>
-                        <Link href="/biz-kimiz" className="hover:underline">gizlilik</Link>
+                        <Link href="/sartlar" className="hover:underline">şartlar</Link>
+                        <Link href="/gizlilik" className="hover:underline">gizlilik</Link>
                         <Link href="/biz-kimiz" className="hover:underline">s.s.s.</Link>
                     </div>
                 </footer>

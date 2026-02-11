@@ -10,6 +10,8 @@ export default function Footer() {
                     <Link href="/" className="hover:underline">ana sayfa</Link>
                     <Link href="/sanatcilar" className="hover:underline">sanatçılar</Link>
                     <Link href="/biz-kimiz" className="hover:underline">hakkımızda</Link>
+                    <Link href="/gizlilik" className="hover:underline">gizlilik</Link>
+                    <Link href="/sartlar" className="hover:underline">şartlar</Link>
                     <Link href="/giris" className="hover:underline">giriş</Link>
                 </div>
             </div>
