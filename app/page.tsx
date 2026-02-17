@@ -5,6 +5,8 @@ import ProductShowcase from '@/components/ProductShowcase';
 import LiveClock from '@/components/LiveClock';
 import HomeQuickActions from '@/components/HomeQuickActions';
 
+export const dynamic = 'force-dynamic';
+
 type HomeWork = {
     id: string | number;
     title: string;
